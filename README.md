@@ -10,14 +10,14 @@ Godot **4.7.2** · GDScript · 2D isometric vector-cartoon art (128 × 64 px til
 2. กด **F5** เพื่อเล่นจากเมนูหลัก หรือเปิด `scenes/world/world.tscn` แล้วกด **F6** เพื่อเข้าโลกทันที
 
 ## ปุ่มควบคุม
-WASD / ลูกศร เดิน (ตามทิศบนจอ) · Shift วิ่ง · E โต้ตอบ · ESC หยุดเกม · F3 ข้อมูลดีบัก
-(จองไว้สำหรับ Phase 3: คลิกซ้าย / F ใช้เครื่องมือ · 1–8 เลือกช่อง Hotbar · Tab / I กระเป๋า)
+WASD / ลูกศร เดิน (ตามทิศบนจอ) · Shift วิ่ง · E โต้ตอบ/เก็บของ · คลิกซ้าย / F ใช้เครื่องมือ · 1–8 เลือกช่อง Hotbar · Tab / I กระเป๋า · ESC หยุดเกม · F3 ข้อมูลดีบัก
 
 ## เอกสาร
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — แผนทุกเฟส
 - [`docs/CHECKLIST.md`](docs/CHECKLIST.md) — สถานะงาน
 - [`docs/PIVOT_2D.md`](docs/PIVOT_2D.md) — เหตุผลและแผนการเปลี่ยนเป็น 2D
 - [`docs/P1_2D.md`](docs/P1_2D.md) — P1-2D: ฉาก สคริปต์ Inspector signal และวิธีทดสอบ
+- [`docs/P3A.md`](docs/P3A.md) — Phase 3A: ไอเท็ม กระเป๋า Hotbar ตัดไม้ ทุบหิน เก็บของป่า
 - `resources/world/world_layout.json` — พิกัดโลกทั้งหมด (เมตร) แปลงเป็น tile ด้วย `WorldLayout.to_pixels()`
 
 ## ภาพ
@@ -27,6 +27,7 @@ WASD / ลูกศร เดิน (ตามทิศบนจอ) · Shift �
 ## ทดสอบอัตโนมัติ
 ```
 godot --headless --path . res://tests/p1_2d_test.tscn
+godot --headless --path . res://tests/p3a_test.tscn
 ```
 หรือเปิด `tests/p1_2d_test.tscn` แล้วกด F6 (ผลอยู่ในแท็บ Output)
 

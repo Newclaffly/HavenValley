@@ -520,6 +520,71 @@ def villager(direction: str, phase: int):
         _out.append("</g>")
 
 
+# --- Gathering: stumps, picked bushes, forage, items on the ground ---------------------------------
+
+def stump(pine: bool = False):
+    p = iso(0, 0)
+    shadow_ellipse((p[0] + 8, p[1] + 3), 22, 7, 0.3)
+    r = 10 if pine else 13
+    path(f"M{p[0]-r-3:.1f},{p[1]+1:.1f} q3,-4 3,-8 l0,-12 l{2*r:.1f},0 l0,12 q0,4 3,8 z", grad("#9c6a3e", "#6e4426", 0, 0, 1, 0))
+    ellipse((p[0], p[1] - 19), r, r * 0.45, grad("#f2d29a", "#d9ad6c"), INK, 2.2)
+    ellipse((p[0], p[1] - 19), r * 0.55, r * 0.25, "none", "#b98a52", 1.4)
+    path(f"M{p[0]+r-2:.1f},{p[1]-10:.1f} q6,-4 10,-2", "none", INK, 2)
+    ellipse((p[0] + r + 9, p[1] - 12), 4, 2.4, "#7cbf5a", INK, 1.2)
+
+
+def bush_leaves():
+    bush("", ("#4f8f3f", "#6aae4f", "#94d06a"))
+
+
+def forage_mushrooms():
+    p = iso(0, 0)
+    shadow_ellipse((p[0] + 6, p[1] + 2), 20, 6, 0.28)
+    for dx, dy, s in ((-8, 0, 1.0), (7, 2, 0.8), (0, 5, 0.6)):
+        x, y = p[0] + dx, p[1] + dy
+        path(f"M{x-4*s:.1f},{y:.1f} l1,-12*{s} ".replace("*" + str(s), "") if False else
+             f"M{x-4*s:.1f},{y:.1f} l{1*s:.1f},{-12*s:.1f} l{6*s:.1f},0 l{1*s:.1f},{12*s:.1f} z", "#f4ecd8", INK, 1.6)
+        path(f"M{x-12*s:.1f},{y-11*s:.1f} q{12*s:.1f},{-16*s:.1f} {24*s:.1f},0 q{-12*s:.1f},{4*s:.1f} {-24*s:.1f},0 z",
+             rgrad("#ee6a5a", "#b83a2e", 0.4, 0.3), INK, 1.8)
+        for k in (-5, 1, 6):
+            circle((x + k * s, y - 15 * s - (2 if k == 1 else 0) * s), 1.6 * s, "#fff6ea", "none", 0)
+
+
+def item_on_ground(kind: str):
+    p = iso(0, 0)
+    shadow_ellipse((p[0] + 4, p[1] + 2), 16, 5, 0.3)
+    x, y = p
+    if kind == "wood":
+        for k, (dx, dy) in enumerate(((-6, -4), (6, -2), (0, -12))):
+            cx, cy = x + dx, y + dy
+            path(f"M{cx-12:.1f},{cy-5:.1f} l20,-6 q5,0 5,6 q0,6 -5,6 l-20,6 q-5,0 -5,-6 q0,-6 5,-6 z", grad("#9c6a3e", "#6e4426"), INK, 1.8)
+            ellipse((cx + 13, cy - 5), 4.2, 6, grad("#f2d29a", "#d9ad6c"), INK, 1.6)
+    elif kind == "stone":
+        path(f"M{x-14:.1f},{y:.1f} q-1,-12 8,-16 q10,-4 18,4 q4,8 -2,12 z", rgrad("#ece6da", "#9a9184", 0.35, 0.25), INK, 2)
+        path(f"M{x-6:.1f},{y-12:.1f} q5,-3 9,-1", "none", "#ffffff", 1.6)
+    elif kind == "mushroom":
+        path(f"M{x-3:.1f},{y:.1f} l1,-10 l5,0 l1,10 z", "#f4ecd8", INK, 1.6)
+        path(f"M{x-11:.1f},{y-9:.1f} q11,-15 22,0 q-11,4 -22,0 z", rgrad("#ee6a5a", "#b83a2e", 0.4, 0.3), INK, 1.8)
+    elif kind == "berries":
+        for k in range(5):
+            circle((x - 8 + (k % 3) * 7, y - 6 - (k // 3) * 7), 5, rgrad("#d46a9a", "#8e2f5a", 0.35, 0.3), INK, 1.4)
+        path(f"M{x-2:.1f},{y-18:.1f} q6,-6 12,-2 q-6,4 -12,2 z", "#6fb04a", INK, 1.2)
+    elif kind == "wildflower":
+        for k, dx in enumerate((-6, 0, 6)):
+            line((x + dx * 0.4, y), (x + dx, y - 16 + abs(dx)), "#4e8a33", 1.8)
+            for j in range(5):
+                a_ = j * 1.2566
+                circle((x + dx + math.cos(a_) * 3.6, y - 18 + abs(dx) + math.sin(a_) * 3.2), 3, "#f2d04a", INK, 0.9)
+            circle((x + dx, y - 18 + abs(dx)), 1.8, "#e2a800", INK, 0.6)
+    elif kind in ("axe", "pickaxe"):
+        line((x - 14, y - 2), (x + 12, y - 14), INK, 6)
+        line((x - 14, y - 2), (x + 12, y - 14), "#b07a48", 3.6)
+        if kind == "axe":
+            path(f"M{x+6:.1f},{y-22:.1f} l12,4 l-2,12 l-10,-6 z", grad("#e9edf2", "#9aa3ad"), INK, 1.8)
+        else:
+            path(f"M{x-2:.1f},{y-26:.1f} q14,-2 24,10 q-10,-6 -22,-4 z", grad("#e9edf2", "#9aa3ad"), INK, 1.8)
+
+
 # --- Asset list -----------------------------------------------------------------------------------
 
 def buildings_from_layout() -> dict:
@@ -569,7 +634,13 @@ def assets() -> dict:
         "sign": (sign, 160, 160, 80, 130),
         "crates": (crates, 220, 200, 110, 150),
         "lamp": (lamp, 160, 200, 60, 170),
+        "stump": (lambda: stump(False), 160, 120, 70, 90),
+        "stump_pine": (lambda: stump(True), 160, 120, 70, 90),
+        "bush_leaves": (bush_leaves, 200, 160, 100, 120),
+        "forage_mushrooms": (forage_mushrooms, 140, 110, 70, 80),
     }
+    for kind in ("wood", "stone", "mushroom", "berries", "wildflower", "axe", "pickaxe"):
+        table["item_" + kind] = (lambda kind=kind: item_on_ground(kind), 110, 90, 55, 70)
     for name, b in buildings_from_layout().items():
         # The house is symmetric left/right of its anchor; it rises by the wall, roof, chimney/tower.
         half_w = K * ((b["w"] + b["d"]) * 24 + 30)

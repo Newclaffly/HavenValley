@@ -49,7 +49,8 @@ func _ready() -> void:
 	build_greybox()
 	ground_view.build(layout)
 	_build_island_sides()
-	objects.build(layout, ground, _obstacles, _signs)
+	objects.build(layout, ground, _obstacles, _signs, $Sim/Forage)
+	($HarvestSystem as HarvestSystem).setup()
 	build_msec = Time.get_ticks_msec() - start
 	_attach_player_view()
 	_set_camera_limits()
@@ -240,6 +241,7 @@ func _attach_player_view() -> void:
 	player_sprite = _player.get_node("Sprite") as CharacterSprite
 	player_sprite.reparent(objects, false)
 	player_sprite.name = "PlayerSprite"
+	player_sprite.add_to_group("player_sprite")
 	var old_camera := _player.get_node_or_null("Camera")
 	if old_camera:
 		old_camera.queue_free()

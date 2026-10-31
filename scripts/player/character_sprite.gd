@@ -54,6 +54,18 @@ func show_motion(direction: String, moving: bool, speed: float = 1.0) -> void:
 	speed_scale = speed
 
 
+## Quick squash-and-lean used when swinging a tool.
+func play_swing() -> void:
+	var base := Vector2.ONE * absf(scale.x)
+	var lean := 0.12 if facing != "left" else -0.12
+	var tween := create_tween()
+	tween.tween_property(self, "rotation", lean, 0.08)
+	tween.parallel().tween_property(self, "scale", base * Vector2(1.08, 0.92), 0.08)
+	tween.tween_property(self, "rotation", -lean * 0.5, 0.08)
+	tween.parallel().tween_property(self, "scale", base, 0.12)
+	tween.tween_property(self, "rotation", 0.0, 0.1)
+
+
 func _frame(column: int, row: int) -> AtlasTexture:
 	var atlas := AtlasTexture.new()
 	atlas.atlas = sheet

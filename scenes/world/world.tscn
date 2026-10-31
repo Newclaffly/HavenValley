@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="5_pause"]
 [ext_resource type="Script" path="res://scripts/world/ground_view.gd" id="6_ground_view"]
 [ext_resource type="Script" path="res://scripts/world/world_objects.gd" id="7_objects"]
+[ext_resource type="Script" path="res://scripts/gathering/harvest_system.gd" id="8_harvest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_edge_h"]
 size = Vector2(5152, 32)
@@ -26,6 +27,8 @@ tile_set = ExtResource("2_tiles")
 [node name="Signs" type="Node2D" parent="Sim"]
 
 [node name="Obstacles" type="StaticBody2D" parent="Sim"]
+
+[node name="Forage" type="Node2D" parent="Sim"]
 
 [node name="Player" parent="Sim" instance=ExtResource("3_player")]
 
@@ -62,6 +65,11 @@ script = ExtResource("7_objects")
 process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
+
+[node name="HarvestSystem" type="Node" parent="." node_paths=PackedStringArray("objects", "pickup_parent")]
+script = ExtResource("8_harvest")
+objects = NodePath("../View/Objects")
+pickup_parent = NodePath("../View/Objects")
 
 [node name="HUD" parent="." instance=ExtResource("4_hud")]
 

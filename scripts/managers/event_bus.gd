@@ -24,6 +24,10 @@ signal notification_requested(title: String, message: String)
 @warning_ignore("unused_signal")
 signal player_chunk_changed(chunk: String)
 
+## What the selected tool would hit changed, for example "Chop Oak tree". Empty = nothing.
+@warning_ignore("unused_signal")
+signal tool_target_changed(prompt: String)
+
 ## The player entered another region, for example "forest" / "Westwood Forest".
 @warning_ignore("unused_signal")
 signal region_changed(region_id: String, region_name: String)

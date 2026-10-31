@@ -19,6 +19,16 @@
    163
   ]
  },
+ "bush_leaves": {
+  "anchor": [
+   89,
+   113
+  ],
+  "size": [
+   200,
+   163
+  ]
+ },
  "crates": {
   "anchor": [
    93,
@@ -57,6 +67,16 @@
   "size": [
    155,
    133
+  ]
+ },
+ "forage_mushrooms": {
+  "anchor": [
+   60,
+   57
+  ],
+  "size": [
+   143,
+   98
   ]
  },
  "house_barn": {
@@ -229,6 +249,76 @@
    996
   ]
  },
+ "item_axe": {
+  "anchor": [
+   50,
+   65
+  ],
+  "size": [
+   117,
+   101
+  ]
+ },
+ "item_berries": {
+  "anchor": [
+   45,
+   64
+  ],
+  "size": [
+   112,
+   100
+  ]
+ },
+ "item_mushroom": {
+  "anchor": [
+   45,
+   51
+  ],
+  "size": [
+   112,
+   87
+  ]
+ },
+ "item_pickaxe": {
+  "anchor": [
+   50,
+   77
+  ],
+  "size": [
+   117,
+   113
+  ]
+ },
+ "item_stone": {
+  "anchor": [
+   45,
+   53
+  ],
+  "size": [
+   112,
+   89
+  ]
+ },
+ "item_wildflower": {
+  "anchor": [
+   45,
+   70
+  ],
+  "size": [
+   112,
+   106
+  ]
+ },
+ "item_wood": {
+  "anchor": [
+   68,
+   68
+  ],
+  "size": [
+   136,
+   104
+  ]
+ },
  "lamp": {
   "anchor": [
    45,
@@ -281,6 +371,26 @@
   "size": [
    148,
    218
+  ]
+ },
+ "stump": {
+  "anchor": [
+   52,
+   74
+  ],
+  "size": [
+   147,
+   121
+  ]
+ },
+ "stump_pine": {
+  "anchor": [
+   52,
+   70
+  ],
+  "size": [
+   147,
+   117
   ]
  },
  "tree_apple": {
