@@ -1,28 +1,34 @@
 # Haven Valley
 
-Cozy open-world life simulation — farming, house building, exploration and crafting.
-Godot **4.7.2** · GDScript · Terrain3D 1.1.0 · Blender (glTF) · Windows PC
+Cozy 2D pixel-art life simulation — farming, house building, exploration and crafting.
+Godot **4.7.2** · GDScript · 2D top-down pixel art (16 px tiles) · Windows PC
+
+> เวอร์ชัน 3D เดิม (Phase 0–2C) อยู่ใน branch `prototype-3d`
 
 ## เปิดโปรเจกต์
 1. เปิด Godot 4.7.2 → **Import** → เลือก `project.godot` ในโฟลเดอร์นี้
 2. กด **F5** เพื่อเล่นจากเมนูหลัก หรือเปิด `scenes/world/world.tscn` แล้วกด **F6** เพื่อเข้าโลกทันที
-3. ปั้นภูมิประเทศ: เปิด `scenes/world/terrain_editor.tscn` (ดู `docs/PHASE2.md` ส่วน 2B)
-
-ต้องเปิดปลั๊กอิน Terrain3D ใน Project Settings → Plugins (มากับโปรเจกต์ใน `addons/terrain_3d`) ถ้าไม่มี Terrain3D เกมจะใช้ภูมิประเทศสำรองในตัวอัตโนมัติ
 
 ## ปุ่มควบคุม
-WASD เดิน · Shift วิ่ง · Space กระโดด · เมาส์ หมุนกล้อง · ล้อเมาส์ ซูม · E โต้ตอบ · ESC หยุดเกม · F3 ข้อมูลดีบัก
+WASD / ลูกศร เดิน · Shift วิ่ง · E โต้ตอบ · ESC หยุดเกม · F3 ข้อมูลดีบัก
+(จองไว้สำหรับ Phase 3: คลิกซ้าย / F ใช้เครื่องมือ · 1–8 เลือกช่อง Hotbar · Tab / I กระเป๋า)
 
 ## เอกสาร
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — แผนทุกเฟส
 - [`docs/CHECKLIST.md`](docs/CHECKLIST.md) — สถานะงาน
-- [`docs/PHASE1.md`](docs/PHASE1.md) — Phase 1: สถาปัตยกรรม ฉาก Inspector signal และวิธีทดสอบ
-- [`docs/PHASE2.md`](docs/PHASE2.md) — Phase 2: ภูมิประเทศ น้ำ ถนน สะพาน, ผลทดสอบและวิธีติดตั้ง Terrain3D
-- `resources/world/world_layout.json` — พิกัดโลกทั้งหมด (v0.3)
-- `tools/terrain/` — สร้างภูมิประเทศใหม่จากแบบแปลน
+- [`docs/PIVOT_2D.md`](docs/PIVOT_2D.md) — เหตุผลและแผนการเปลี่ยนเป็น 2D
+- [`docs/P1_2D.md`](docs/P1_2D.md) — P1-2D: ฉาก สคริปต์ Inspector signal และวิธีทดสอบ
+- `resources/world/world_layout.json` — พิกัดโลกทั้งหมด (เมตร) แปลงเป็น tile ด้วย `WorldLayout.to_pixels()`
+
+## ภาพ
+ตอนนี้ใช้ภาพชั่วคราวจาก `tools/art/make_placeholders.py` จนกว่าจะนำเข้าชุด Ninja Adventure (CC0)
+วางชุดภาพที่ดาวน์โหลดไว้ใน `art_source/packs/` (Godot ไม่นำเข้าโฟลเดอร์ `art_source`)
 
 ## ทดสอบอัตโนมัติ
-เปิด `tests/phase1_test.tscn` หรือ `tests/phase2_test.tscn` แล้วกด F6 (ผลอยู่ในแท็บ Output)
+```
+godot --headless --path . res://tests/p1_2d_test.tscn
+```
+หรือเปิด `tests/p1_2d_test.tscn` แล้วกด F6 (ผลอยู่ในแท็บ Output)
 
 ## Git
-โค้ดอยู่ที่ https://github.com/Newclaffly/HavenValley แต่ละส่วนงานมี commit และ tag ของตัวเอง (`phase-2a`, `phase-2b`, …)
+https://github.com/Newclaffly/HavenValley — commit แยกตามเฟส

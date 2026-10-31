@@ -79,8 +79,9 @@ func _update_debug() -> void:
 	var lines := PackedStringArray()
 	lines.append("FPS %d" % Engine.get_frames_per_second())
 	if player:
-		var p := player.global_position
-		lines.append("Position  x %.1f  y %.1f  z %.1f" % [p.x, p.y, p.z])
-		lines.append("Chunk %s   Speed %.1f m/s   %s" % [_chunk, player.get_horizontal_speed(), "on ground" if player.is_on_floor() else "in air"])
+		var tile := WorldLayout.to_tile(player.global_position)
+		var m := WorldLayout.to_metres(player.global_position)
+		lines.append("Tile %d, %d   (blueprint x %.0f  z %.0f)" % [tile.x, tile.y, m.x, m.z])
+		lines.append("Chunk %s   Speed %.1f tiles/s   Facing %s" % [_chunk, player.get_speed_tiles(), player.direction_name()])
 	lines.append("F3 hide")
 	_debug_label.text = "\n".join(lines)

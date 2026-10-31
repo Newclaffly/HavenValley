@@ -1,14 +1,14 @@
 @tool
 class_name InfoSign
 extends Interactable
-## A sign that shows a title and message on the HUD when read.
+## A readable sign. Interacting shows its title and message as a HUD notification.
 
-@export var title: String = ""
+@export var title: String = "Sign"
 @export_multiline var message: String = ""
 
 
 func _init() -> void:
-	super()
+	super._init()
 	prompt = "Read sign"
 
 

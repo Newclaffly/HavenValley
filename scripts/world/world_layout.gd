@@ -5,10 +5,40 @@ extends RefCounted
 ##
 ## The JSON is the single source of truth for coordinates. Godot imports .json files as JSON
 ## resources, so they are exported with the game like any other resource.
-## Blueprint axes match Godot: +X east, −Z north, +Y up, 1 unit = 1 metre.
+## Blueprint axes: +X east, −Z north (Y is height), 1 unit = 1 metre, origin at the Town Hall area.
+##
+## The 2D game draws the blueprint as a 320 × 320 tile map: one tile = 3.125 blueprint metres,
+## one tile = 16 pixels, north at the top of the screen. Use to_pixels() / to_metres() / to_tile().
 
 const DEFAULT_PATH := "res://resources/world/world_layout.json"
 const COLUMNS := "ABCDEFGH"
+const TILE_PX := 16
+const MAP_TILES := 320
+const METRES_PER_TILE := 3.125
+## Pixels per blueprint metre (16 / 3.125).
+const PX_PER_METRE := TILE_PX / METRES_PER_TILE
+const ORIGIN_METRES := Vector2(-500, -500)
+
+
+## Blueprint metres (x east, z south) -> 2D world pixels (top-left of the map is 0, 0).
+static func to_pixels(x_metres: float, z_metres: float) -> Vector2:
+	return (Vector2(x_metres, z_metres) - ORIGIN_METRES) * PX_PER_METRE
+
+
+## 2D world pixels -> blueprint metres as Vector3(x, 0, z), for region and chunk lookups.
+static func to_metres(pixels: Vector2) -> Vector3:
+	var m := pixels / PX_PER_METRE + ORIGIN_METRES
+	return Vector3(m.x, 0.0, m.y)
+
+
+## 2D world pixels -> map tile coordinates.
+static func to_tile(pixels: Vector2) -> Vector2i:
+	return Vector2i(floori(pixels.x / TILE_PX), floori(pixels.y / TILE_PX))
+
+
+## Size of the whole map in pixels.
+static func map_size_px() -> Vector2:
+	return Vector2(MAP_TILES, MAP_TILES) * TILE_PX
 
 var data: Dictionary = {}
 

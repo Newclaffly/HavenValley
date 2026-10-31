@@ -1,78 +1,48 @@
-[gd_scene format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/world_manager.gd" id="1_world"]
-[ext_resource type="Script" path="res://scripts/world/greybox_builder.gd" id="2_greybox"]
-[ext_resource type="JSON" path="res://resources/world/world_layout.json" id="3_layout"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="5_hud"]
-[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="6_pause"]
-[ext_resource type="Script" path="res://scripts/world/terrain_system.gd" id="7_terrain"]
-[ext_resource type="Image" path="res://resources/world/terrain/heightmap.res" id="8_heightmap"]
-[ext_resource type="Texture2D" path="res://resources/world/terrain/control.png" id="9_control"]
-[ext_resource type="Texture2D" path="res://resources/world/terrain/zones.png" id="10_zones"]
-[ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="11_terrain_shader"]
-[ext_resource type="Script" path="res://scripts/world/water_builder.gd" id="12_water"]
-[ext_resource type="Shader" path="res://shaders/water.gdshader" id="13_water_shader"]
-[ext_resource type="Shader" path="res://shaders/terrain3d_haven.gdshader" id="14_t3d_shader"]
-[ext_resource type="Script" path="res://scripts/world/nature_scatter.gd" id="15_nature"]
+[ext_resource type="TileSet" path="res://resources/tiles/placeholder_tileset.tres" id="2_tiles"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="5_pause"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
-sky_top_color = Color(0.36, 0.6, 0.86, 1)
-sky_horizon_color = Color(0.74, 0.85, 0.92, 1)
-ground_bottom_color = Color(0.28, 0.34, 0.26, 1)
-ground_horizon_color = Color(0.74, 0.85, 0.92, 1)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_edge_h"]
+size = Vector2(5152, 32)
 
-[sub_resource type="Sky" id="Sky_day"]
-sky_material = SubResource("ProceduralSkyMaterial_day")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_edge_v"]
+size = Vector2(32, 5152)
 
-[sub_resource type="Environment" id="Environment_day"]
-background_mode = 2
-sky = SubResource("Sky_day")
-ambient_light_source = 3
-tonemap_mode = 2
-fog_enabled = true
-fog_light_color = Color(0.74, 0.85, 0.92, 1)
-fog_density = 0.0012
-
-[node name="World" type="Node3D"]
+[node name="World" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_world")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_day")
+[node name="Ground" type="TileMapLayer" parent="."]
+z_index = -10
+tile_set = ExtResource("2_tiles")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.819152, 0, -0.573576, -0.439385, 0.642788, -0.627507, 0.368688, 0.766044, 0.526541, 0, 60, 0)
-light_energy = 1.1
-shadow_enabled = true
-directional_shadow_max_distance = 200.0
+[node name="Signs" type="Node2D" parent="."]
+y_sort_enabled = true
 
-[node name="Terrain" type="Node3D" parent="."]
-script = ExtResource("7_terrain")
-terrain3d_shader = ExtResource("14_t3d_shader")
-control_map = ExtResource("9_control")
-zone_map = ExtResource("10_zones")
-heightmap = ExtResource("8_heightmap")
-heightmap_shader = ExtResource("11_terrain_shader")
+[node name="Player" parent="." instance=ExtResource("3_player")]
 
-[node name="Water" type="Node3D" parent="."]
-script = ExtResource("12_water")
-layout_json = ExtResource("3_layout")
-water_shader = ExtResource("13_water_shader")
+[node name="WorldEdges" type="StaticBody2D" parent="."]
 
-[node name="Greybox" type="Node3D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("2_greybox")
-layout_json = ExtResource("3_layout")
-terrain = NodePath("../Terrain")
+[node name="North" type="CollisionShape2D" parent="WorldEdges"]
+position = Vector2(2560, -16)
+shape = SubResource("RectangleShape2D_edge_h")
 
-[node name="Nature" type="Node3D" parent="." node_paths=PackedStringArray("terrain")]
-script = ExtResource("15_nature")
-layout_json = ExtResource("3_layout")
-terrain = NodePath("../Terrain")
-control_map = ExtResource("9_control")
-zone_map = ExtResource("10_zones")
+[node name="South" type="CollisionShape2D" parent="WorldEdges"]
+position = Vector2(2560, 5136)
+shape = SubResource("RectangleShape2D_edge_h")
 
-[node name="Player" parent="." instance=ExtResource("4_player")]
+[node name="West" type="CollisionShape2D" parent="WorldEdges"]
+position = Vector2(-16, 2560)
+shape = SubResource("RectangleShape2D_edge_v")
 
-[node name="HUD" parent="." instance=ExtResource("5_hud")]
+[node name="East" type="CollisionShape2D" parent="WorldEdges"]
+position = Vector2(5136, 2560)
+shape = SubResource("RectangleShape2D_edge_v")
 
-[node name="PauseMenu" parent="." instance=ExtResource("6_pause")]
+[node name="HUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("5_pause")]

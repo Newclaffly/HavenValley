@@ -32,7 +32,7 @@ func start_new_game() -> void:
 func enter_gameplay() -> void:
 	get_tree().paused = false
 	state = State.PLAYING
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # 2D: the cursor stays visible (mouse aims tools)
 
 
 ## Called by the main menu scene when it opens.
@@ -61,7 +61,6 @@ func set_paused(paused: bool) -> void:
 		return
 	state = State.PAUSED if paused else State.PLAYING
 	get_tree().paused = paused
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if paused else Input.MOUSE_MODE_CAPTURED
 	EventBus.game_paused.emit(paused)
 
 

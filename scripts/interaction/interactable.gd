@@ -1,9 +1,9 @@
 @tool
 class_name Interactable
-extends Area3D
+extends Area2D
 ## Something the player can use with the interact key (E).
 ##
-## Add this node (or a subclass) to any object and give it a CollisionShape3D child.
+## Add this node (or a subclass) to any object and give it a CollisionShape2D child.
 ## The player's InteractionDetector finds it on physics layer 3 ("interactable").
 ## Subclasses override _on_interact(); other nodes can connect to the `interacted` signal instead.
 

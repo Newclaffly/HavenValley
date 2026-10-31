@@ -14,5 +14,5 @@ func _ready() -> void:
 	# Saving and loading arrive in Phase 6; until then there is nothing to continue.
 	_continue_button.disabled = true
 	_continue_button.tooltip_text = "Saving arrives in Phase 6."
-	_version_label.text = "v%s · Phase 1 prototype" % ProjectSettings.get_setting("application/config/version", "0.1.0")
+	_version_label.text = "v%s · 2D prototype" % ProjectSettings.get_setting("application/config/version", "0.1.0")
 	_new_game_button.grab_focus()
