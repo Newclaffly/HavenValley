@@ -1,0 +1,346 @@
+{
+ "bush_berries": {
+  "anchor": [
+   89,
+   113
+  ],
+  "size": [
+   200,
+   163
+  ]
+ },
+ "bush_flowers": {
+  "anchor": [
+   89,
+   113
+  ],
+  "size": [
+   200,
+   163
+  ]
+ },
+ "crates": {
+  "anchor": [
+   93,
+   180
+  ],
+  "size": [
+   258,
+   245
+  ]
+ },
+ "flowers_blue": {
+  "anchor": [
+   78,
+   73
+  ],
+  "size": [
+   129,
+   118
+  ]
+ },
+ "flowers_pink": {
+  "anchor": [
+   83,
+   67
+  ],
+  "size": [
+   152,
+   104
+  ]
+ },
+ "flowers_yellow": {
+  "anchor": [
+   70,
+   93
+  ],
+  "size": [
+   155,
+   133
+  ]
+ },
+ "house_barn": {
+  "anchor": [
+   903,
+   1185
+  ],
+  "size": [
+   2148,
+   1732
+  ]
+ },
+ "house_blacksmith": {
+  "anchor": [
+   535,
+   856
+  ],
+  "size": [
+   1310,
+   1190
+  ]
+ },
+ "house_cafe": {
+  "anchor": [
+   494,
+   835
+  ],
+  "size": [
+   1228,
+   1149
+  ]
+ },
+ "house_carpenter": {
+  "anchor": [
+   657,
+   955
+  ],
+  "size": [
+   1582,
+   1358
+  ]
+ },
+ "house_coop": {
+  "anchor": [
+   452,
+   777
+  ],
+  "size": [
+   1119,
+   1063
+  ]
+ },
+ "house_farmhouse": {
+  "anchor": [
+   616,
+   988
+  ],
+  "size": [
+   1537,
+   1381
+  ]
+ },
+ "house_fisher_cottage": {
+  "anchor": [
+   452,
+   777
+  ],
+  "size": [
+   1119,
+   1063
+  ]
+ },
+ "house_general_store": {
+  "anchor": [
+   616,
+   934
+  ],
+  "size": [
+   1499,
+   1316
+  ]
+ },
+ "house_greenhouse": {
+  "anchor": [
+   698,
+   975
+  ],
+  "size": [
+   1663,
+   1398
+  ]
+ },
+ "house_old_mill": {
+  "anchor": [
+   535,
+   856
+  ],
+  "size": [
+   1310,
+   1190
+  ]
+ },
+ "house_restaurant": {
+  "anchor": [
+   616,
+   998
+  ],
+  "size": [
+   1544,
+   1393
+  ]
+ },
+ "house_storage_bld": {
+  "anchor": [
+   535,
+   856
+  ],
+  "size": [
+   1310,
+   1190
+  ]
+ },
+ "house_storage_delivery": {
+  "anchor": [
+   944,
+   1211
+  ],
+  "size": [
+   2234,
+   1780
+  ]
+ },
+ "house_town_hall": {
+  "anchor": [
+   944,
+   1437
+  ],
+  "size": [
+   2264,
+   2014
+  ]
+ },
+ "house_village_a": {
+  "anchor": [
+   412,
+   735
+  ],
+  "size": [
+   1023,
+   996
+  ]
+ },
+ "house_village_b": {
+  "anchor": [
+   412,
+   735
+  ],
+  "size": [
+   1023,
+   996
+  ]
+ },
+ "house_village_c": {
+  "anchor": [
+   412,
+   735
+  ],
+  "size": [
+   1023,
+   996
+  ]
+ },
+ "lamp": {
+  "anchor": [
+   45,
+   306
+  ],
+  "size": [
+   186,
+   340
+  ]
+ },
+ "player_walk": {
+  "anchor": [
+   130,
+   390
+  ],
+  "frames": [
+   4,
+   4
+  ],
+  "size": [
+   260,
+   430
+  ]
+ },
+ "rock_large": {
+  "anchor": [
+   105,
+   99
+  ],
+  "size": [
+   264,
+   164
+  ]
+ },
+ "rock_small": {
+  "anchor": [
+   64,
+   92
+  ],
+  "size": [
+   160,
+   143
+  ]
+ },
+ "sign": {
+  "anchor": [
+   72,
+   184
+  ],
+  "size": [
+   148,
+   218
+  ]
+ },
+ "tree_apple": {
+  "anchor": [
+   186,
+   488
+  ],
+  "size": [
+   492,
+   615
+  ]
+ },
+ "tree_lemon": {
+  "anchor": [
+   169,
+   443
+  ],
+  "size": [
+   450,
+   561
+  ]
+ },
+ "tree_oak": {
+  "anchor": [
+   202,
+   533
+  ],
+  "size": [
+   533,
+   669
+  ]
+ },
+ "tree_orange": {
+  "anchor": [
+   177,
+   465
+  ],
+  "size": [
+   470,
+   588
+  ]
+ },
+ "tree_pine": {
+  "anchor": [
+   131,
+   461
+  ],
+  "size": [
+   400,
+   578
+  ]
+ },
+ "tree_pine_tall": {
+  "anchor": [
+   161,
+   575
+  ],
+  "size": [
+   488,
+   712
+  ]
+ }
+}

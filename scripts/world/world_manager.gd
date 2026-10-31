@@ -2,10 +2,12 @@ class_name WorldManager
 extends Node2D
 ## Root script of the 2D world scene.
 ##
-## Phase P1-2D: draws a greybox version of the blueprint into the Ground TileMapLayer (grass,
-## roads, rivers, lake, bridges, building blocks), places a sign at every building, spawns the
-## player at the blueprint spawn and reports the player's chunk and region.
-## Phase P2-2D replaces the greybox drawing with the generated tile map.
+## The world has two halves:
+##   * Sim (hidden): the flat top-down map in 16 px tiles — collision tiles painted from the
+##     blueprint (water, buildings), signs, tree trunks and the player body. All gameplay runs here.
+##   * View: the isometric picture of the same world — GroundView (vector ground), island sides and
+##     WorldObjects (y-sorted sprites). The player's sprite and the camera follow the body.
+## It also spawns the player at the blueprint spawn and reports the player's chunk and region.
 
 ## Tile atlas coordinates in the placeholder tileset (assets/placeholder/tiles.png).
 const GRASS := Vector2i(0, 0)
@@ -21,27 +23,46 @@ const AREA_IDS := [
 	"pasture", "starter_field", "plot_a", "plot_b", "plot_c", "res_district", "mirror_lake",
 ]
 
+## Depth of the island's soil sides in view pixels.
+const SIDE_DEPTH := 180.0
+const SIDE_TOP := Color("a87a50")
+const SIDE_BOTTOM := Color("6f4a2e")
+
 var layout: WorldLayout
 var current_chunk: String = ""
 var current_region: String = ""
 var build_msec: int = 0
 
-@onready var ground: TileMapLayer = $Ground
-@onready var _signs: Node2D = $Signs
-@onready var _player: PlayerController = $Player
+@onready var ground: TileMapLayer = $Sim/Ground
+@onready var _signs: Node2D = $Sim/Signs
+@onready var _obstacles: StaticBody2D = $Sim/Obstacles
+@onready var _player: PlayerController = $Sim/Player
+@onready var ground_view: GroundView = $View/GroundView
+@onready var objects: WorldObjects = $View/Objects
+@onready var camera: Camera2D = $View/Camera
+var player_sprite: CharacterSprite
 
 
 func _ready() -> void:
 	layout = WorldLayout.load_default()
 	var start := Time.get_ticks_msec()
 	build_greybox()
+	ground_view.build(layout)
+	_build_island_sides()
+	objects.build(layout, ground, _obstacles, _signs)
 	build_msec = Time.get_ticks_msec() - start
+	_attach_player_view()
 	_set_camera_limits()
 	_spawn_player()
 	GameManager.enter_gameplay()
 
 
+func _process(_delta: float) -> void:
+	_sync_player_view()
+
+
 func _physics_process(_delta: float) -> void:
+	_sync_player_view()
 	var metres := WorldLayout.to_metres(_player.global_position)
 	var chunk := layout.chunk_of(metres)
 	if chunk != current_chunk:
@@ -208,15 +229,71 @@ func _facing(faces: String) -> Vector2:
 	return Vector2.DOWN
 
 
-func _set_camera_limits() -> void:
-	var camera := _player.get_node("Camera") as Camera2D
+## Map pixel position -> isometric view position.
+func view_position(map_px: Vector2) -> Vector2:
+	return WorldLayout.to_view(map_px)
+
+
+## Move the player's sprite out of the hidden simulation into the y-sorted view.
+func _attach_player_view() -> void:
+	_player.input_transform = WorldLayout.screen_to_ground()
+	player_sprite = _player.get_node("Sprite") as CharacterSprite
+	player_sprite.reparent(objects, false)
+	player_sprite.name = "PlayerSprite"
+	var old_camera := _player.get_node_or_null("Camera")
+	if old_camera:
+		old_camera.queue_free()
+
+
+func _sync_player_view() -> void:
+	if player_sprite == null:
+		return
+	player_sprite.position = view_position(_player.global_position)
+	camera.position = player_sprite.position + Vector2(0, -60)
+
+
+func _build_island_sides() -> void:
 	var size := WorldLayout.map_size_px()
-	camera.limit_left = 0
-	camera.limit_top = 0
-	camera.limit_right = int(size.x)
-	camera.limit_bottom = int(size.y)
+	var west := WorldLayout.to_view(Vector2(0, size.y))
+	var south := WorldLayout.to_view(size)
+	var east := WorldLayout.to_view(Vector2(size.x, 0))
+	var sides := $View/IslandSides as Node2D
+	for child in sides.get_children():
+		child.queue_free()
+	for edge: Array in [[west, south, 1.0], [south, east, 0.82]]:
+		var a: Vector2 = edge[0]
+		var b: Vector2 = edge[1]
+		var shade: float = edge[2]
+		var poly := Polygon2D.new()
+		poly.polygon = PackedVector2Array([a, b, b + Vector2(0, SIDE_DEPTH), a + Vector2(0, SIDE_DEPTH)])
+		poly.vertex_colors = PackedColorArray([SIDE_TOP * shade, SIDE_TOP * shade, SIDE_BOTTOM * shade, SIDE_BOTTOM * shade])
+		sides.add_child(poly)
+		for depth in [0.0, 60.0, 120.0, SIDE_DEPTH]:
+			var line := Line2D.new()
+			line.points = PackedVector2Array([a + Vector2(0, depth), b + Vector2(0, depth)])
+			line.width = 6.0 if depth == 0.0 or depth == SIDE_DEPTH else 3.0
+			line.default_color = GroundView.INK if line.width > 4.0 else Color(GroundView.INK, 0.35)
+			sides.add_child(line)
+	var rim := Line2D.new()
+	rim.points = PackedVector2Array([WorldLayout.to_view(Vector2.ZERO), east, south, west])
+	rim.closed = true
+	rim.width = 5.0
+	rim.default_color = GroundView.INK
+	sides.add_child(rim)
+
+
+func _set_camera_limits() -> void:
+	var size := WorldLayout.map_size_px()
+	var west := WorldLayout.to_view(Vector2(0, size.y))
+	var east := WorldLayout.to_view(Vector2(size.x, 0))
+	camera.limit_left = int(west.x) - 400
+	camera.limit_right = int(east.x) + 400
+	camera.limit_top = -400
+	camera.limit_bottom = int(WorldLayout.to_view(size).y + SIDE_DEPTH) + 300
 
 
 func _spawn_player() -> void:
 	var spawn := layout.get_player_spawn()
 	_player.teleport(pixels(spawn.x, spawn.z), Vector2.UP)
+	_sync_player_view()
+	camera.reset_smoothing()

@@ -12,3 +12,4 @@ __pycache__/
 *.pyc
 *.blend1
 _to_delete/
+tools/art/out/

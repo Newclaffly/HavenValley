@@ -40,6 +40,30 @@ static func to_tile(pixels: Vector2) -> Vector2i:
 static func map_size_px() -> Vector2:
 	return Vector2(MAP_TILES, MAP_TILES) * TILE_PX
 
+
+# --- Isometric view -------------------------------------------------------------------------------
+# The simulation (collision, movement, interaction) runs on the flat top-down map above.
+# The isometric view draws it with 128 x 64 px diamond tiles: view = ISO * map pixels.
+
+const ISO_TILE := Vector2(128, 64)
+
+
+## Map pixels (top-down) -> isometric view pixels.
+static func iso_transform() -> Transform2D:
+	var sx := ISO_TILE.x * 0.5 / TILE_PX
+	var sy := ISO_TILE.y * 0.5 / TILE_PX
+	return Transform2D(Vector2(sx, sy), Vector2(-sx, sy), Vector2.ZERO)
+
+
+static func to_view(map_px: Vector2) -> Vector2:
+	return iso_transform() * map_px
+
+
+## Screen direction -> ground (map) direction, for movement input.
+static func screen_to_ground() -> Transform2D:
+	var t := iso_transform().affine_inverse()
+	return Transform2D(t.x, t.y, Vector2.ZERO)
+
 var data: Dictionary = {}
 
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_controller"]
 [ext_resource type="Script" path="res://scripts/player/character_sprite.gd" id="2_sprite"]
-[ext_resource type="Texture2D" path="res://assets/placeholder/player_walk.png" id="3_sheet"]
+[ext_resource type="Texture2D" path="res://assets/art/player_walk.png" id="3_sheet"]
 [ext_resource type="Script" path="res://scripts/interaction/interaction_detector.gd" id="4_detector"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
@@ -21,9 +21,13 @@ position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_feet")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -8)
+scale = Vector2(0.5, 0.5)
+centered = false
+offset = Vector2(-130, -390)
 script = ExtResource("2_sprite")
 sheet = ExtResource("3_sheet")
+frame_size = Vector2i(260, 430)
+walk_fps = 7.0
 
 [node name="Facing" type="Node2D" parent="."]
 position = Vector2(0, -4)
@@ -35,9 +39,3 @@ script = ExtResource("4_detector")
 position = Vector2(0, 10)
 shape = SubResource("CircleShape2D_reach")
 
-[node name="Camera" type="Camera2D" parent="."]
-process_callback = 0
-position = Vector2(0, -8)
-zoom = Vector2(4, 4)
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0

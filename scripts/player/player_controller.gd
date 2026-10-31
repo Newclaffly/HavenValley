@@ -13,9 +13,13 @@ extends CharacterBody2D
 @export var acceleration: float = 60.0
 @export var deceleration: float = 80.0
 
+## Maps screen directions to ground directions. Identity for a top-down view; the isometric
+## world sets it so W walks up the screen (north-west on the ground).
+@export var input_transform: Transform2D = Transform2D.IDENTITY
+
 ## When false the player ignores movement input (menus, dialogue, cutscenes).
 var input_enabled: bool = true
-## Facing as a unit vector (down = (0, 1)).
+## Facing on screen as a unit vector (down = (0, 1)); the sprite shows this direction.
 var facing: Vector2 = Vector2.DOWN
 
 @onready var _sprite: CharacterSprite = $Sprite
@@ -33,7 +37,10 @@ func _physics_process(delta: float) -> void:
 		input = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		running = Input.is_action_pressed("run")
 	var speed := (run_tiles_per_second if running else walk_tiles_per_second) * WorldLayout.TILE_PX
-	var target := input.limit_length(1.0) * speed
+	var ground_input := input_transform.basis_xform(input)
+	if ground_input.length_squared() > 0.0:
+		ground_input = ground_input.normalized() * minf(input.length(), 1.0)
+	var target := ground_input * speed
 	var rate := (acceleration if input != Vector2.ZERO else deceleration) * WorldLayout.TILE_PX
 	velocity = velocity.move_toward(target, rate * delta)
 	move_and_slide()
@@ -46,7 +53,7 @@ func _physics_process(delta: float) -> void:
 			facing = Vector2(0, signf(input.y))
 		elif facing.dot(input) <= 0.0:
 			facing = Vector2(signf(input.x), 0)
-	_facing_node.rotation = facing.angle() - PI * 0.5  # Facing's +Y points where the player looks
+	_facing_node.rotation = ground_facing().angle() - PI * 0.5  # Facing's +Y points where the player looks
 	var moving := velocity.length() > 4.0
 	_sprite.show_motion(direction_name(), moving, 1.5 if running else 1.0)
 
@@ -60,6 +67,11 @@ func direction_name() -> String:
 	return "up" if facing.y < 0.0 else "down"
 
 
+## Facing direction on the ground (unit vector), for reach and interaction.
+func ground_facing() -> Vector2:
+	return input_transform.basis_xform(facing).normalized()
+
+
 func get_speed_tiles() -> float:
 	return velocity.length() / WorldLayout.TILE_PX
 
@@ -69,7 +81,7 @@ func teleport(position_px: Vector2, face: Vector2 = Vector2.DOWN) -> void:
 	global_position = position_px
 	velocity = Vector2.ZERO
 	facing = face
-	_facing_node.rotation = facing.angle() - PI * 0.5
+	_facing_node.rotation = ground_facing().angle() - PI * 0.5
 	reset_physics_interpolation()
 	var camera := get_node_or_null("Camera") as Camera2D
 	if camera:
