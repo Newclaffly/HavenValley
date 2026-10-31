@@ -1,0 +1,823 @@
+<title>Haven Valley World Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500;1,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@500;700&display=swap">
+<style>
+/* Layout: surveyor's field book — a wide map plate up top, then lettered survey sheets A–H in one reading column. Thai edition. */
+:root{
+  --bg:#EEF2EC; --surface:#FFFFFF; --ink:#1E2A22; --muted:#5A6B5F; --line:#D2DCD3;
+  --accent:#16807D; --wood:#87552A; --chip:#E3EBE4; --ok:#2F7D46; --warn:#A8660F;
+  --display:"Alegreya", "Noto Serif Thai", Georgia, "Times New Roman", serif;
+  --body:"Figtree", "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", "Noto Sans Thai", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#101714; --surface:#17211C; --ink:#E3EBE4; --muted:#9BAB9F; --line:#2A3830;
+  --accent:#5CC5BF; --wood:#D69C62; --chip:#203029; --ok:#6CC88A; --warn:#E3A54B; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#101714; --surface:#17211C; --ink:#E3EBE4; --muted:#9BAB9F; --line:#2A3830;
+  --accent:#5CC5BF; --wood:#D69C62; --chip:#203029; --ok:#6CC88A; --warn:#E3A54B; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;line-height:1.3}
+h1{font-size:clamp(34px,5vw,54px);letter-spacing:-.01em;line-height:1.15}
+h2{font-size:28px}
+h3{font-size:19px}
+p{margin:0;max-width:72ch}
+code{font-family:var(--mono);font-size:.86em}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+header{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:22px}
+header .lead{color:var(--muted);margin-top:10px}
+.stamp{display:grid;grid-template-columns:auto auto;gap:4px 16px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.stamp b{color:var(--ink);font-weight:500}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-family:var(--mono);font-size:11.5px;background:var(--chip);color:var(--warn);border:1px solid currentColor}
+.toc{display:flex;flex-wrap:wrap;gap:6px}
+.toc a{font-size:13px;color:var(--ink);text-decoration:none;padding:4px 12px;border:1px solid var(--line);border-radius:99px;background:var(--surface)}
+.toc a b{font-family:var(--mono);color:var(--accent);font-weight:500;margin-right:6px}
+.toc a:hover{border-color:var(--accent)}
+section{display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.sheet-h{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.letter{font-family:var(--display);font-style:italic;font-weight:700;font-size:28px;color:var(--accent);min-width:28px}
+.sub{color:var(--muted)}
+
+.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+@media (max-width:900px){.mapgrid{grid-template-columns:minmax(0,1fr)}}
+.plate{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px;min-width:0}
+.plate svg{display:block;width:100%;height:auto;border-radius:3px}
+:root[data-theme="dark"] .plate svg.map{filter:brightness(.93)}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .plate svg.map{filter:brightness(.93)} }
+.layers{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.layers label{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;padding:4px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;user-select:none;background:var(--bg)}
+.layers input{accent-color:var(--accent);margin:0}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.info{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px}
+.info h3{font-size:21px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px;margin:8px 0 0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px;max-height:540px;overflow:auto}
+.list input{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.list h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 4px 4px;font-weight:500}
+.list button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;background:none;color:var(--ink);font:inherit;font-size:13px;padding:4px 6px;border-radius:3px;cursor:pointer}
+.list button span:last-child{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.list button:hover,.list button.on{background:var(--chip)}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,label:focus-within,.mk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.mk{cursor:pointer}
+.mk.sel circle{stroke:#111;stroke-width:2.5}
+.hide-grid .lyr-grid,.hide-contours .lyr-contours,.hide-roads .lyr-roads,.hide-water .lyr-water,.hide-marks .lyr-marks,.hide-labels .lyr-labels,.hide-zones .lyr-zones{display:none}
+
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--bg);position:sticky;top:0;z-index:1}
+tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--chip);font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 12px}
+td.n{font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
+.note{font-size:13.5px;color:var(--muted)}
+.callout{border-left:3px solid var(--accent);background:var(--surface);padding:12px 16px;border-radius:0 6px 6px 0;font-size:14px}
+pre{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+.chunks{display:grid;grid-template-columns:22px repeat(8,minmax(0,1fr));gap:3px;max-width:480px;font-family:var(--mono);font-size:11px}
+.chunks div{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:3px;max-width:100%}
+.chunks .h{color:var(--muted);aspect-ratio:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.regions{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.reg{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.reg .meta{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.reg p{font-size:14px}
+.reg ul{margin:0;padding-left:18px;font-size:13.5px}
+.ms{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.ms > div{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.ms > div:last-child{border-bottom:0}
+.ms b{font-family:var(--mono);font-weight:500;color:var(--accent)}
+.ms p{font-size:14px}
+.ms .acc{color:var(--muted);font-size:13px;margin-top:4px}
+.check{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 24px;font-size:14px}
+.check li{display:flex;gap:8px}
+.check li::before{content:"☐";color:var(--muted)}
+.check li.done::before{content:"☑";color:var(--ok)}
+.btn{font:inherit;font-size:13px;padding:6px 14px;border-radius:4px;border:1px solid var(--accent);background:var(--accent);color:var(--surface);cursor:pointer}
+.qs{display:flex;flex-direction:column;gap:10px;padding:0;margin:0}
+.qs li{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 16px;font-size:14px;list-style:none}
+.qs li b{font-family:var(--display);font-size:17px}
+.filter{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.filter select{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="eyebrow">เอกสารออกแบบ 01 · แบบแปลนแผนที่โลก · ฉบับแก้ไขที่ 2</div>
+    <h1>Haven Valley</h1>
+    <p class="lead">หุบเขาชนบทขนาด 1000 × 1000&nbsp;เมตร หมู่บ้าน Haven อยู่ตรงกลาง มีศาลากลางเป็นหัวใจของหมู่บ้าน ฟาร์มของผู้เล่นอยู่ทางตะวันตกเฉียงใต้ของหมู่บ้าน ป่าปิดฝั่งตะวันตก เทือกเขาปิดฝั่งเหนือ แม่น้ำไหลลงทางตะวันออกสู่ทะเลสาบ Mirror และทุ่งหญ้าโล่งเต็มฝั่งใต้ พิกัดทั้งหมดเป็นหน่วยเมตรของ Godot</p>
+  </div>
+  <div class="stamp">
+    <span>สถานะ</span><b><span class="pill">รอตรวจทาน</span></b>
+    <span>เวอร์ชัน</span><b>Blueprint v0.2</b>
+    <span>วันที่</span><b>31 ต.ค. 2026</b>
+    <span>เอนจิน</span><b>Godot 4.7.2 · Blender (glTF)</b>
+    <span>มาตราส่วน</span><b>1 หน่วย = 1 เมตร</b>
+  </div>
+</header>
+
+<nav class="toc" aria-label="สารบัญ">
+  <a href="#a"><b>A</b>แผนที่ภาพรวม</a><a href="#b"><b>B</b>ตารางพิกัด</a><a href="#c"><b>C</b>รายละเอียดภูมิภาค</a><a href="#d"><b>D</b>ความสูงภูมิประเทศ</a>
+  <a href="#e"><b>E</b>ถนนและแหล่งน้ำ</a><a href="#zones"><b>E2</b>พื้นที่ก่อสร้างและขยาย</a><a href="#f"><b>F</b>ภูมิประเทศใน Godot</a><a href="#g"><b>G</b>แอสเซ็ต Blender</a><a href="#h"><b>H</b>ขั้นตอนพัฒนา</a>
+</nav>
+
+<!-- ================= A ================= -->
+<section id="a">
+  <div class="sheet-h"><span class="letter">A</span><h2>แผนที่ภาพรวมมุมบน</h2></div>
+  <p class="sub">ทิศเหนืออยู่ด้านบน (Godot −Z) ช่องตารางคือ chunk ของเกมขนาด 125&nbsp;เมตร ใช้ตัวอักษร A–H จากตะวันตกไปตะวันออก และตัวเลข 1–8 จากเหนือลงใต้ คลิกหมุดหรือรายการเพื่อดูพิกัดที่แน่นอน</p>
+  <div class="mapgrid">
+    <div class="plate">
+      <div class="layers" id="layers">
+        <label><input type="checkbox" id="l-grid" data-c="grid" checked> ตาราง chunk</label>
+        <label><input type="checkbox" id="l-contours" data-c="contours" checked> เส้นชั้นความสูง</label>
+        <label><input type="checkbox" id="l-water" data-c="water" checked> แหล่งน้ำ</label>
+        <label><input type="checkbox" id="l-roads" data-c="roads" checked> ถนนและทางเดิน</label>
+        <label><input type="checkbox" id="l-zones" data-c="zones" checked> พื้นที่ก่อสร้างและขยาย</label>
+        <label><input type="checkbox" id="l-marks" data-c="marks" checked> สถานที่สำคัญ</label>
+        <label><input type="checkbox" id="l-labels" data-c="labels" checked> ป้ายชื่อ</label>
+      </div>
+      <div id="mapwrap"><svg class="map" id="map" viewBox="-552 -552 1104 1104" role="img" aria-label="แผนที่มุมบนของ Haven Valley"></svg></div>
+      <div class="legend" id="legend" style="margin-top:10px"></div>
+    </div>
+    <div class="side">
+      <div class="info" id="info"></div>
+      <div class="list" id="list"><input id="q" type="search" placeholder="ค้นหาสถานที่…" aria-label="ค้นหาสถานที่"></div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="tw"><table>
+      <tr><th>กฎ</th><th>ค่า</th></tr>
+      <tr><td>หน่วย</td><td>1 หน่วย Godot = 1 หน่วย Blender = 1 เมตร</td></tr>
+      <tr><td>จุดกำเนิด (0, 0, 0)</td><td>กลางหมู่บ้าน ห่างจากศาลากลางไปทางใต้ 24&nbsp;เมตร</td></tr>
+      <tr><td>แกนใน Godot</td><td>+X ตะวันออก · −Z เหนือ · +Y ขึ้น</td></tr>
+      <tr><td>พื้นที่เล่นได้</td><td class="n">X −500…500 · Z −500…500</td></tr>
+      <tr><td>ระดับอ้างอิง</td><td class="n">Y 0 = ผิวน้ำทะเลสาบ Mirror</td></tr>
+      <tr><td>Chunk ของเกม</td><td class="n">125 × 125 ม. · 8 × 8 = 64 ชิ้น</td></tr>
+      <tr><td>หา chunk ของจุด</td><td class="n">col = floor((x+500)/125) → A–H<br>row = floor((z+500)/125)+1 → 1–8</td></tr>
+    </table></div>
+    <div class="tw"><table>
+      <tr><th>Godot ↔ Blender</th><th>รายละเอียด</th></tr>
+      <tr><td class="n">Blender (X, Y, Z) = Godot (x, −z, y)</td><td>Blender ใช้แกน Z ขึ้น ตัว export glTF ที่ตั้งค่า “+Y Up” จะแปลงกลับเป็นแกนของ Godot ได้พอดี</td></tr>
+      <tr><td>ทิศเหนือ = Blender +Y</td><td>มุมมองด้านบนใน Blender (numpad 7) ตรงกับแผนที่นี้โดยไม่ต้องหมุน</td></tr>
+      <tr><td>จุด origin ของแอสเซ็ต</td><td>อาคาร: กลางพื้นที่ฐานที่ระดับพื้น · สะพาน: กลางพื้นสะพาน · พร็อพ: กลางฐาน</td></tr>
+      <tr><td>“หันหน้า”</td><td>ทิศที่ประตูหน้าหันไป (N เหนือ, S ใต้, E ตะวันออก, W ตะวันตก)</td></tr>
+      <tr><td>ขนาดผู้เล่น</td><td class="n">สูง 1.75 ม. · เดิน 4 ม./วิ · วิ่ง 7 ม./วิ · ก้าวขึ้น 0.35 ม. · กระโดด 1.2 ม.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= B ================= -->
+<section id="b">
+  <div class="sheet-h"><span class="letter">B</span><h2>ตารางพิกัด</h2></div>
+  <p class="sub">สถานที่สำคัญ อาคาร และสะพานทุกแห่ง พร้อมตำแหน่งใน Godot ขนาดฐาน (X × Z) ทิศหันหน้า และ chunk ข้อมูลชุดเดียวกันอยู่ในไฟล์ JSON ท้ายหน้า</p>
+  <div class="filter"><label for="regsel">แสดง</label><select id="regsel"><option value="">ทุกภูมิภาค</option></select></div>
+  <div class="tw" style="max-height:640px;overflow:auto"><table id="ctable"></table></div>
+</section>
+
+<!-- ================= C ================= -->
+<section id="c">
+  <div class="sheet-h"><span class="letter">C</span><h2>รายละเอียดภูมิภาค</h2></div>
+  <div class="regions">
+    <div class="reg"><div class="eyebrow">ตรงกลาง · chunk D4 E4 D5 E5 (+D3 E3)</div><h3>หมู่บ้าน Haven</h3>
+      <div class="meta">วงรีจุดศูนย์กลาง (0, 0) ขนาด 300 × 340 ม. · ที่ราบสูง Y 10</div>
+      <p>ศูนย์กลางทางสังคมและเศรษฐกิจ ศาลากลางหันหน้าไปทางใต้สู่ลานกลางเมือง ตลาดเปิดออกทางด้านใต้ของลาน ร้านค้าเรียงตามถนนวงแหวนด้านใน ย่านที่พักอาศัยเป็นถนนเส้นเดียวทางเหนือของวงแหวน ทำให้ NPC เดินผ่านลานกลางเมืองระหว่างไปทำงาน</p>
+      <ul><li>ศาลากลาง ลานกลางเมือง ตลาด (8 แผง)</li><li>ร้านขายของทั่วไป คาเฟ่ ร้านอาหาร ช่างตีเหล็ก โรงช่างไม้</li><li>ย่านที่พักอาศัย: บ้าน 12 หลังบนถนน Elm Lane</li><li>สวนชุมชน สวนสาธารณะเล็ก ลานเก็บของและจัดส่ง</li></ul></div>
+    <div class="reg"><div class="eyebrow">ตะวันตกเฉียงใต้ · chunk C5 C6 C7 D6</div><h3>Farm Valley (ฟาร์ม)</h3>
+      <div class="meta">x −245…−88 · z 92…312 · Y 8 ราบเรียบ</div>
+      <p>ที่ดินของผู้เล่น ประมาณ 3.5&nbsp;เฮกตาร์ เดินจากศาลากลางประมาณ 75 วินาที ลำธาร Willow ไหลผ่านด้านตะวันตกระหว่างฟาร์มกับป่า ทำให้ใกล้ทั้งน้ำและไม้ อาคารเริ่มต้นอยู่ครึ่งเหนือ ครึ่งใต้เป็นแปลงนาและแปลงก่อสร้างอิสระ 3 แปลง</p>
+      <ul><li>บ้านไร่ บ่อน้ำ แปลงผักครัว โรงนา เล้าไก่ ทุ่งเลี้ยงสัตว์</li><li>อาคารเก็บของ เรือนกระจก</li><li>แปลงนาเริ่มต้น 64 × 64 ม. แปลงก่อสร้าง A–C</li></ul></div>
+    <div class="reg"><div class="eyebrow">ตะวันตก · คอลัมน์ A–B แถว 3–8</div><h3>ป่า Westwood</h3>
+      <div class="meta">x −500…≈−262 · z −290…380 · Y 12–42</div>
+      <p>ป่าผสมขนาดใหญ่ที่สูงขึ้นเรื่อยๆ ไปทางขอบตะวันตก และเป็นขอบเขตโลกฝั่งตะวันตก ต้นโอ๊กและเบิร์ชอยู่ใกล้ฟาร์ม ต้นสนอยู่ลึกเข้าไป ถนนสายตะวันตกสิ้นสุดที่แคมป์คนตัดไม้ ทางเดินเท้านำไปยังลานโล่ง และมีศาลแห่งหนึ่งที่ไม่มีทางเดินไปถึงเลย</p>
+      <ul><li>แคมป์คนตัดไม้ ลานเห็ด ลานต้นโอ๊กเก่า</li><li>สระเฟิร์น ศาลลับ</li><li>ไม้ เห็ด ผลเบอร์รี่ สัตว์ป่า</li></ul></div>
+    <div class="reg"><div class="eyebrow">เหนือ · แถว 1–2</div><h3>เทือกเขา Ridge</h3>
+      <div class="meta">z −500…≈−260 · Y 25–150</div>
+      <p>กำแพงหินพาดตลอดขอบเหนือ มองเห็นได้จากทุกที่ ถนนสายเหนือไต่จากย่านที่พักอาศัยขึ้นไปยังจุดเริ่มเส้นทาง แล้วคดเคี้ยวขึ้นไปถึงเหมือง เส้นทางสันเขาและยอดเขานำไปยังซากปรักหักพัง ถ้ำ และจุดชมวิวที่ดีที่สุดของหุบเขา ทางน้ำทั้งสองสายเริ่มต้นที่นี่</p>
+      <ul><li>เหมืองทองแดงเก่า ถ้ำเสียงสะท้อน จุดชมวิวยอดเขา</li><li>หอสังเกตการณ์ร้าง กระท่อมคนงานเหมืองร้าง</li><li>น้ำตก Highfall (18 ม.) และน้ำตก Willow (8 ม.)</li></ul></div>
+    <div class="reg"><div class="eyebrow">ตะวันออก · คอลัมน์ F–H แถว 1–6</div><h3>แม่น้ำ Haven และทะเลสาบ Mirror</h3>
+      <div class="meta">ศูนย์กลางทะเลสาบ (360, 80) ขนาด 220 × 240 ม. · Y 0</div>
+      <p>แม่น้ำตกลงจากน้ำตก Highfall ผ่านโรงสีเก่า แล้วไหลลงทะเลสาบ Mirror ทะเลสาบระบายน้ำลงใต้ผ่านน้ำตกเล็กๆ สู่ทุ่งหญ้า มีทางเดินรอบทะเลสาบ เกาะต้นหลิว ท่าเรือสองแห่ง และกระท่อมชาวประมงที่ฝั่งไกล</p>
+      <ul><li>ท่าเรือริมทะเลสาบ สะพานตกปลาฝั่งตะวันออก เกาะ Willow</li><li>โรงสีเก่าและสะพานโรงสี จุดตกปลาริมแม่น้ำ</li><li>กระท่อมชาวประมง น้ำตกทางน้ำออก</li></ul></div>
+    <div class="reg"><div class="eyebrow">ใต้ · แถว 7–8</div><h3>ทุ่งหญ้า Meadowlands</h3>
+      <div class="meta">x −500…500 · z ≈300…500 · Y 2–18</div>
+      <p>ทุ่งหญ้าลอนคลื่นเปิดโล่งสำหรับการขยายในอนาคต ลำธาร Willow ไหลผ่านจากตะวันตกไปตะวันออกแล้วรวมกับทางน้ำออกของทะเลสาบ เนินกังหันลมเป็นสถานที่สำคัญทางใต้และบังขอบโลกด้านใต้ พื้นที่ว่างที่สงวนไว้สำหรับเนื้อหาในอนาคตส่วนใหญ่อยู่ที่นี่</p>
+      <ul><li>ทุ่งดอกไม้ป่า ทุ่งเลี้ยงสัตว์ส่วนรวม ทุ่งเลี้ยงสัตว์ขนาดใหญ่</li><li>จุดชมวิวเนินกังหันลม</li><li>แปลงก่อสร้างในทุ่งหญ้า พื้นที่สงวนสำหรับทำนา</li></ul></div>
+  </div>
+  <div class="two">
+    <div>
+      <h3 style="margin-bottom:10px">ภูมิภาคของแต่ละ chunk</h3>
+      <div class="chunks" id="chunks"></div>
+      <div class="legend" id="chunkleg" style="margin-top:10px"></div>
+    </div>
+    <div class="callout"><p><b>ภูมิภาคเชื่อมกันอย่างไร</b> ทุกภูมิภาคมีถนนหนึ่งสายออกจากวงแหวนหมู่บ้าน: ถนนสายตะวันตกไปป่า ถนนไปฟาร์มไปทางตะวันตกเฉียงใต้ ถนนสายเหนือผ่านย่านที่พักอาศัยไปภูเขา ถนนโรงสีไปทางตะวันออกเฉียงเหนือสู่แม่น้ำ ถนนสายตะวันออกไปทะเลสาบ และถนนสายใต้ไปทุ่งหญ้า ทางน้ำทั้งสองสายไปสิ้นสุดทางตะวันออกเฉียงใต้ ดังนั้นการเดินลงเนินจะพาไปถึงทะเลสาบหรือทุ่งหญ้าเสมอ ป่า ภูเขา เนินเขาฝั่งไกลของทะเลสาบ และเนินกังหันลมช่วยบังขอบโลกทั้งสี่ด้าน จึงไม่มีกำแพงให้เห็น</p></div>
+  </div>
+</section>
+
+<!-- ================= D ================= -->
+<section id="d">
+  <div class="sheet-h"><span class="letter">D</span><h2>แผนความสูงภูมิประเทศ</h2></div>
+  <p class="sub">ภาพตัดขวางสองแนวผ่านโลก ความสูงถูกกำหนดให้น้ำไหลลงจากภูเขาสู่ทะเลสาบและทุ่งหญ้าเสมอ และให้หอนาฬิกาศาลากลาง (ยอดสูง Y&nbsp;34) มองเห็นได้จากฟาร์ม ท่าเรือริมทะเลสาบ และจุดเริ่มเส้นทางขึ้นเขา</p>
+  <div class="plate"><div style="overflow-x:auto"><svg id="profNS" viewBox="0 0 1080 330" style="min-width:640px" role="img" aria-label="ภาพตัดแนวเหนือ–ใต้ ตามแนว x = 0"></svg></div></div>
+  <div class="plate"><div style="overflow-x:auto"><svg id="profEW" viewBox="0 0 1080 330" style="min-width:640px" role="img" aria-label="ภาพตัดแนวตะวันตก–ตะวันออก ตามแนว z = 80"></svg></div></div>
+  <div class="tw"><table>
+    <tr><th>โซน</th><th>ความสูง (Y)</th><th>ความชันสูงสุด</th><th>กฎการปั้นพื้นผิว</th></tr>
+    <tr><td>ทะเลสาบ Mirror</td><td class="n">ผิวน้ำ 0 · ก้นทะเลสาบ −8</td><td class="n">—</td><td>ชายตื้นลึก 1.2 ม. กว้าง 8 ม. จากฝั่ง ให้ผู้เล่นลุยน้ำได้ก่อนจะลึกลง</td></tr>
+    <tr><td>แม่น้ำ Haven</td><td class="n">110 → 0</td><td class="n">—</td><td>ผิวน้ำต่ำกว่าตลิ่ง 3–4 ม. ตลอดหุบเขา ลดตลิ่งเหลือ 1 ม. ที่จุดตกปลา</td></tr>
+    <tr><td>ที่ราบหมู่บ้าน Haven</td><td class="n">10 ± 0.2</td><td class="n">2°</td><td>ราบเรียบ ถนนย่านที่พักอาศัยยกสูงเป็น 11 ถนนที่ออกจากที่ราบใช้ทางลาด 6–8%</td></tr>
+    <tr><td>Farm Valley</td><td class="n">8 ± 0.3</td><td class="n">3°</td><td>ราบเรียบ เพื่อให้กริดก่อสร้าง 1 ม. และช่องปลูกพืชไม่ขัดกับพื้น</td></tr>
+    <tr><td>ทุ่งหญ้า</td><td class="n">2–18</td><td class="n">12°</td><td>ลอนยาว (ความยาวคลื่น 60–120 ม.) เนินกังหันลมสูงถึง 18 ที่ (40, 470)</td></tr>
+    <tr><td>ป่า Westwood</td><td class="n">12–42</td><td class="n">25°</td><td>สูงขึ้นไปทางตะวันตก ศาลลับอยู่ในแอ่งที่ระดับ 30 หลังสันเขาสูง 38</td></tr>
+    <tr><td>เชิงเขา</td><td class="n">20–60</td><td class="n">30°</td><td>ทางคดเคี้ยวของถนนสายเหนือคงความชัน 8%</td></tr>
+    <tr><td>ภูเขา</td><td class="n">60–150</td><td class="n">หน้าผา</td><td>หน้าผา ชะง่อนหิน และปากถ้ำ เป็นโมเดล Blender ที่วางบนภูมิประเทศ</td></tr>
+  </table></div>
+  <p class="note">กฎของผู้เล่น: ตั้ง <code>floor_max_angle</code> = 40° ใน CharacterBody3D อะไรที่ชันกว่านี้ถือเป็นหน้าผาโดยตั้งใจ และต้องไม่แตะถนนหรือทางเดิน</p>
+</section>
+
+<!-- ================= E ================= -->
+<section id="e">
+  <div class="sheet-h"><span class="letter">E</span><h2>เครือข่ายถนนและแม่น้ำ</h2></div>
+  <h3>ประเภทถนน</h3>
+  <div class="tw"><table>
+    <tr><th>ประเภท</th><th>ความกว้าง</th><th>ผิวทาง</th><th>ไหล่ทาง</th><th>ใช้สำหรับ</th><th>ความชันสูงสุด</th></tr>
+    <tr><td><b>ถนนในหมู่บ้าน</b></td><td class="n">5 ม.</td><td>หินปูถนน</td><td class="n">ขอบทาง 1 ม. ทั้งสองข้าง</td><td>ถนนวงแหวนและถนนภายในหมู่บ้าน</td><td class="n">3%</td></tr>
+    <tr><td><b>ถนนสายหลัก</b></td><td class="n">6 ม.</td><td>ดินอัดแน่น</td><td class="n">ขอบหญ้า 1.5 ม.</td><td>จากหมู่บ้านไปแต่ละภูมิภาค เกวียนสวนกันได้</td><td class="n">8%</td></tr>
+    <tr><td><b>ทางเล็ก</b></td><td class="n">4 ม.</td><td>ดิน</td><td class="n">—</td><td>ทางในฟาร์ม ทางในทุ่งหญ้า</td><td class="n">10%</td></tr>
+    <tr><td><b>ทางเดินเท้า</b></td><td class="n">2 ม.</td><td>หญ้าที่ถูกเหยียบ / กรวด</td><td class="n">—</td><td>ทางรอบทะเลสาบ ทางเดินในป่า</td><td class="n">15%</td></tr>
+    <tr><td><b>เส้นทางภูเขา</b></td><td class="n">1.5 ม.</td><td>หินและกรวด</td><td class="n">—</td><td>เส้นทางยอดเขา สันเขา และถ้ำ</td><td class="n">25% พร้อมขั้นบันได</td></tr>
+  </table></div>
+  <h3>ถนนและทางเดิน</h3>
+  <div class="tw"><table id="rtable"></table></div>
+  <div class="two">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <h3>เครือข่ายแหล่งน้ำ</h3>
+      <div class="tw"><table>
+        <tr><th>แหล่งน้ำ</th><th>เส้นทาง (x, z) และความสูง</th><th>ความกว้าง</th></tr>
+        <tr><td><b>แม่น้ำ Haven</b></td><td class="n" style="white-space:normal">ต้นน้ำ (310,−485) Y110 → น้ำตก Highfall (290,−360) Y72→54 → (240,−240) Y30 → สะพานโรงสี (206,−120) Y16 → จุดตกปลา (203,−62) Y6 → ไหลลงทะเลสาบ (280,−8) Y0</td><td class="n">ต้นน้ำ 5 ม.<br>ปลายน้ำ 10–12 ม.</td></tr>
+        <tr><td><b>ทะเลสาบ Mirror</b></td><td class="n" style="white-space:normal">วงรีศูนย์กลาง (360, 80) รัศมี 110 × 120 ผิวน้ำ Y 0 ก้น −8 เกาะ Willow ที่ (380, 110) รัศมี 18</td><td class="n">220 × 240 ม.</td></tr>
+        <tr><td><b>ทางน้ำออกจากทะเลสาบ</b></td><td class="n" style="white-space:normal">ฝั่งใต้ (330,198) Y0 → น้ำตกทางน้ำออก (305,280) Y0→−3 → รวมกับลำธาร Willow (325,440) Y−4 → ออกทางใต้ (345,500) Y−6</td><td class="n">8 ม.</td></tr>
+        <tr><td><b>ลำธาร Willow</b></td><td class="n" style="white-space:normal">ต้นน้ำ (−180,−465) Y80 → น้ำตก Willow (−170,−330) Y40→32 → สะพานป่า (−226,−15) Y7 → ขอบตะวันตกของฟาร์ม (−266,200) Y5 → สะพานคนเดินทุ่งเลี้ยงสัตว์ (−110,403) Y3 → สะพานทุ่งหญ้า (37,437) Y2 → รวมกับทางน้ำออก (325,440) Y−4</td><td class="n">4–6 ม.</td></tr>
+      </table></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <h3>สะพาน</h3>
+      <div class="tw"><table id="btable"></table></div>
+    </div>
+  </div>
+  <h3>เวลาเดินทางด้วยเท้า</h3>
+  <p class="sub">วัดตามแนวเส้นถนน จากฟาร์มถึงศาลากลางใช้เวลาเดินประมาณ 75 วินาที สั้นพอที่การไปซื้อของจะไม่รู้สึกเป็นภาระ</p>
+  <div class="tw"><table id="ttable"></table></div>
+</section>
+
+<!-- ================= E2 zones ================= -->
+<section id="zones">
+  <div class="sheet-h"><span class="letter">E2</span><h2>พื้นที่ก่อสร้างและพื้นที่ขยาย</h2></div>
+  <div class="tw"><table id="ztable"></table></div>
+  <div class="two">
+    <div class="callout"><p><b>กฎการวางอาคารในทุกพื้นที่ก่อสร้าง</b> ความชันของพื้นต่ำกว่า 3° (ปั้นภูมิประเทศให้ราบไว้แล้ว) ใช้กริด 1 ม. พร้อมตัวเลือก snap 0.5 ม. ร่นจากขอบถนน 3 ม. และจากแหล่งน้ำ 10 ม. อาคารห่างกันอย่างน้อย 2 ม. สี่เหลี่ยมของแต่ละพื้นที่เก็บเป็น Area3D เพื่อให้ระบบก่อสร้างตรวจ “อยู่ในพื้นที่ก่อสร้าง” ได้ด้วยการ query ครั้งเดียว</p></div>
+    <div class="callout"><p><b>พื้นที่ว่างที่เก็บไว้สำหรับเนื้อหาในอนาคต</b> มีเพียงประมาณ 35% ของพื้นที่เล่นได้ที่มีเนื้อหาตายตัว ที่เหลือเป็นป่า ทุ่งหญ้า และไหล่เขาโล่งๆ โดยไม่มีพร็อพฝังไว้ในสี่เหลี่ยมที่สงวน ระบบในอนาคต (บ้าน NPC ใหม่ อีเวนต์ ฟาร์มที่สอง สถานที่ภารกิจ) จึงใช้ที่ดินได้โดยไม่ต้องย้ายสิ่งที่มีอยู่</p></div>
+  </div>
+</section>
+
+<!-- ================= F ================= -->
+<section id="f">
+  <div class="sheet-h"><span class="letter">F</span><h2>กลยุทธ์การสร้างภูมิประเทศใน Godot</h2></div>
+  <div class="two">
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div><h3>Heightmap เดียวเป็นต้นฉบับ</h3><p class="note">Heightmap ภาพขาวดำ 16-bit ขนาด 1024 × 1024 px ที่ 1&nbsp;ม. ต่อพิกเซล ครอบคลุม X/Z −512…512 (พื้นที่เล่นได้ 1000&nbsp;ม. บวกขอบ 12&nbsp;ม.) การเข้ารหัสความสูง: Y = −20 + ค่า × 200 / 65535 ได้ความละเอียด 3&nbsp;มม. ตั้งแต่ Y −20 ถึง 180 การปั้นทำบนไฟล์นี้หรือใน editor อย่างใดอย่างหนึ่ง ไม่ทำสองที่</p></div>
+      <div><h3>ตัวเรนเดอร์ภูมิประเทศ (ตัดสินใจแล้ว: Terrain3D)</h3><p class="note">ใช้ add-on Terrain3D (GDExtension ของบุคคลที่สาม) ซึ่งนำเข้า heightmap ให้ปั้นและระบายเลเยอร์เท็กซ์เจอร์ใน Godot ได้ และมีระบบ LOD และ collision ในตัว รุ่นล่าสุด (v1.0.2) ระบุว่ารองรับ Godot 4.4–4.6+ แต่ยังไม่ยืนยันสำหรับ 4.7 งานแรกของ Phase 1 จึงเป็นการทดสอบความเข้ากันได้กับ Godot 4.7.2 <b>แผนสำรอง:</b> ปั้นใน Blender แบ่งเป็น 64 ชิ้น export เป็น GLB และสร้าง collision จาก heightmap เดียวกันด้วย HeightMapShape3D</p></div>
+      <div><h3>เลเยอร์เท็กซ์เจอร์</h3><p class="note">8 เลเยอร์: หญ้า หญ้าทุ่ง พื้นป่า ดินฟาร์ม ถนนดิน หินปูถนน หิน ก้นแม่น้ำ/ทะเลสาบ ถนนถูกระบายลงในเลเยอร์เหล่านี้ และรูปทรงถนนยังเก็บไว้ในฉากเป็นโหนด Path3D เพื่อให้เส้นทาง NPC และแผนที่ในเกมใช้ข้อมูลชุดเดียวกัน</p></div>
+      <div><h3>นอกขอบโลก</h3><p class="note">โมเดลฉากหลังแบบโพลิกอนต่ำออกไปประมาณ 1.5&nbsp;กม. ไม่มี collision: เงาภูเขาทางเหนือ กำแพงป่าจาก tree card ทางตะวันตก เนินเขาทางตะวันออกและใต้ หมอกช่วยซ่อนจุดสิ้นสุด ขอบพื้นที่เล่นถูกกั้นด้วยภูมิประเทศเอง (หน้าผา ทางลาดป่าชัน เนินเขา) และมีกำแพงล่องหนบางๆ เป็นตัวสำรองเท่านั้น</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div><h3>แหล่งน้ำ</h3><p class="note">แม่น้ำและลำธารเป็นโมเดลแบบริบบิ้นที่ทำใน Blender ตามเส้นโค้งที่ล้อตามเส้นทางด้านบน โดยให้ UV.y วิ่งตามทิศน้ำไหล spatial shader ตัวเดียวเลื่อน normal และฟองตาม UV.y และวาดฟองขาวตามขอบเหมือนภาพอ้างอิง โดยเทียบความลึกของฉาก (sampler <code>hint_depth_texture</code>) กับผิวน้ำ ทะเลสาบเป็นโมเดลแบนที่ Y&nbsp;0 ใช้ shader เดียวกันโดยไม่มีการไหล</p></div>
+      <div><h3>ถ้ำและเหมือง</h3><p class="note">ปากถ้ำเป็นโมเดลหน้าผาจาก Blender ภายในถ้ำเป็นโมเดลแยกอยู่ด้านหลัง ผู้เล่นเดินเข้าไปได้เลยจึงไม่มีหน้าจอโหลด เจาะรูภูมิประเทศ (terrain hole) ของ Terrain3D ใต้ปากถ้ำ</p></div>
+      <div><h3>พืชพรรณและพร็อพ</h3><p class="note">ของตกแต่ง (ต้นไม้ พุ่มไม้ หิน ดอกไม้ หญ้า) ใช้ MultiMeshInstance3D หนึ่งตัวต่อชนิดต่อ chunk และค่อยๆ หายไปตาม <code>visibility_range_end</code>: ต้นไม้ 250&nbsp;ม. พุ่มไม้ 100&nbsp;ม. หญ้า 45&nbsp;ม. สิ่งใดที่ผู้เล่นตัด ขุด หรือเก็บได้ จะเป็น scene instance จริงที่มี ID ถาวร</p></div>
+      <div><h3>ID ถาวรและการบันทึกเกม</h3><p class="note">รูปแบบ <code>region.type.chunk.index</code> เช่น <code>forest.tree_oak.B4.0031</code> เครื่องมือใน editor กำหนด ID ครั้งเดียวแล้วเก็บไว้ในฉาก เซฟเกมบันทึกเฉพาะสิ่งที่เปลี่ยนจากฉากต้นฉบับ (ต้นไม้ที่ถูกตัด หินที่ถูกขุด อาคารที่วาง) เกมใหม่จึงเป็นรายการเปลี่ยนแปลงว่างเปล่า</p></div>
+      <div><h3>การติดตาม chunk</h3><p class="note">WorldManager คำนวณ chunk ของผู้เล่นจากตำแหน่งทุก physics tick และส่ง <code>EventBus.chunk_changed</code> ขอบเขต Area3D ของแต่ละภูมิภาคควบคุมเสียงบรรยากาศและป้ายชื่อบนแผนที่ ถ้าวันหนึ่งต้องทำ streaming ก็ใช้ดัชนี chunk เดียวกันนี้ตัดสินว่าจะโหลดอะไร</p></div>
+    </div>
+  </div>
+  <h3>โครงสร้างฉาก (Scene tree)</h3>
+<pre>Main (Node)                              scenes/main/main.tscn
+└─ World (Node3D)                        scenes/world/world.tscn   script: scripts/world/world_manager.gd
+   ├─ Sky (WorldEnvironment) · Sun (DirectionalLight3D)
+   ├─ Terrain                            ภูมิประเทศ Terrain3D จาก heightmap
+   ├─ Backdrop (Node3D)                  โมเดลฉากหลัง ไม่มี collision
+   ├─ Water (Node3D)
+   │  ├─ River_Haven · Creek_Willow · Lake_Mirror · Outflow   (MeshInstance3D)
+   │  └─ Waterfalls (Node3D)             การ์ดน้ำตก + GPUParticles3D
+   ├─ Roads (Node3D)                     Path3D หนึ่งตัวต่อถนน (เก็บข้อมูลอย่างเดียว)
+   ├─ Regions (Node3D)
+   │  ├─ Village       scenes/regions/village.tscn
+   │  ├─ FarmValley    scenes/regions/farm_valley.tscn
+   │  ├─ Westwood      scenes/regions/westwood.tscn
+   │  ├─ Mountains     scenes/regions/mountains.tscn
+   │  ├─ Lakeside      scenes/regions/lakeside.tscn
+   │  └─ Meadowlands   scenes/regions/meadowlands.tscn
+   ├─ BuildZones (Node3D)                Area3D ต่อพื้นที่ จากไฟล์ registry
+   ├─ Landmarks (Node3D)                 Marker3D ต่อ id ใน registry
+   └─ PlayerSpawn (Marker3D)             (−152, 8, 182)
+
+ฉากภูมิภาค:  Region (Node3D, region.gd, @export region_id)
+             ├─ Bounds (Area3D) · Buildings · Scatter (MultiMeshInstance3D ต่อชนิดต่อ chunk)
+             ├─ Harvestables (มี id ถาวร) · NavRegion (NavigationRegion3D)
+             └─ Occluders (OccluderInstance3D เฉพาะหมู่บ้าน)</pre>
+  <h3>งบประมาณประสิทธิภาพ</h3>
+  <div class="tw"><table>
+    <tr><th>ตัวชี้วัด</th><th>เป้าหมาย</th><th>วิธีวัด</th></tr>
+    <tr><td>อัตราเฟรม</td><td class="n">60 fps ที่ 1080p บนการ์ดจอระดับ GTX 1060 / RX 580</td><td>Debugger → Monitors</td></tr>
+    <tr><td>Draw call ในมุมมอง</td><td class="n">&lt; 1,500</td><td><code>Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME</code></td></tr>
+    <tr><td>Primitive ในมุมมอง</td><td class="n">&lt; 2.5 ล้าน</td><td><code>Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME</code></td></tr>
+    <tr><td>มุมมองหนักที่สุด</td><td class="n">ลานกลางเมืองมองไปทางใต้ตอนเที่ยง</td><td>กล้องเบนช์มาร์กแบบตำแหน่งตายตัว</td></tr>
+    <tr><td>Streaming</td><td class="n">ไม่ทำ เว้นแต่โลกทั้งใบยังเกินงบหลังใช้ LOD และระยะ fade แล้ว</td><td>บินผ่านเส้นทางเบนช์มาร์ก</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= G ================= -->
+<section id="g">
+  <div class="sheet-h"><span class="letter">G</span><h2>ข้อกำหนดแอสเซ็ตสภาพแวดล้อมใน Blender</h2></div>
+  <div class="two">
+    <div class="tw"><table>
+      <tr><th>กฎ</th><th>ข้อกำหนด</th></tr>
+      <tr><td>มาตราส่วน</td><td>ระบบเมตริก unit scale 1.0 ขนาดเท่าของจริง (ประตู 1.2 × 2.2 ม. ผนังสูง 3 ม.)</td></tr>
+      <tr><td>Transform</td><td>Apply ทั้งหมดก่อน export จุด origin อยู่กลางฐาน</td></tr>
+      <tr><td>การ export</td><td>glTF Binary (.glb), +Y Up, apply modifiers, หนึ่งแอสเซ็ตต่อหนึ่งไฟล์</td></tr>
+      <tr><td>วัสดุ</td><td>ใช้ trim sheet และ atlas สไตล์การ์ตูนร่วมกันตามกลุ่ม (ไม้ หิน ใบไม้) ใช้ vertex colour เพื่อสร้างความแตกต่างของสี</td></tr>
+      <tr><td>ความหนาแน่นเท็กซ์เจอร์</td><td>256 px/ม. สำหรับอาคารและพร็อพ · 128 px/ม. สำหรับหินใหญ่และหน้าผา</td></tr>
+      <tr><td>Collision</td><td>โมเดลแยกแบบง่าย ตั้งชื่อ <code>COL_&lt;ชื่อแอสเซ็ต&gt;-colonly</code> หรือ <code>-convcolonly</code> ตัว import glTF ของ Godot อ่าน suffix เหล่านี้แล้วสร้าง collision ให้</td></tr>
+      <tr><td>LOD</td><td>Godot สร้าง LOD ของโมเดลให้อัตโนมัติตอน import ทำ LOD1/LOD2 เองเฉพาะต้นไม้และหน้าผา</td></tr>
+      <tr><td>การตั้งชื่อ</td><td>SM_ static · SK_ skeletal · MAT_ วัสดุ · TEX_ เท็กซ์เจอร์ · COL_ collision · ANIM_ แอนิเมชัน</td></tr>
+    </table></div>
+    <div class="callout"><p><b>สไตล์จากภาพอ้างอิง</b> ผนังซุงซ้อนกันหนาๆ หลังคาไม้แผ่นยื่นลึก ปล่องไฟหิน น้ำสีเทอร์ควอยซ์ขอบฟองสีขาว ต้นไม้ใบกว้างแบบภาพวาดและต้นสนสไตล์การ์ตูน ทางดินอัดแน่นมีก้อนกรวด ให้สร้างสะพานป่า (B4) บ่อน้ำ และบ้านซุงหนึ่งหลังก่อน เพราะทั้งสามอย่างจะเป็นตัวกำหนดสไตล์ของทุกอย่างที่เหลือ</p></div>
+  </div>
+  <div class="tw" style="max-height:640px;overflow:auto"><table id="atable"></table></div>
+</section>
+
+<!-- ================= H ================= -->
+<section id="h">
+  <div class="sheet-h"><span class="letter">H</span><h2>ขั้นตอนการพัฒนา</h2></div>
+  <p class="sub">งานสร้างโลกเรียงตามลำดับ แต่ละขั้นจบด้วยการตรวจที่คุณทำเองได้ MVP ต้องการเพียงหมู่บ้าน Farm Valley ถนนไปฟาร์ม และขอบป่า Westwood ที่สร้างเสร็จสมบูรณ์ ภูมิภาคอื่นเป็นแบบ greybox ไว้ได้จนถึง Phase 5</p>
+  <div class="ms">
+    <div><b>W0</b><div><p>อนุมัติแบบแปลนนี้และการตัดสินใจทั้งสี่ข้อด้านล่าง</p><p class="acc">เสร็จเมื่อ: ตอบการตัดสินใจครบ และล็อกพิกัดเป็น v1.0</p></div></div>
+    <div><b>W1</b><div><p>สร้างโปรเจกต์ Godot และโฟลเดอร์ ทดสอบ Terrain3D กับ Godot 4.7.2 เครื่องมือ greybox อ่าน <code>world_layout.json</code> แล้ววาง Marker3D กล่องแทนอาคารตามขนาดฐาน กล่องแทนสะพาน และจุดเกิดผู้เล่นบนพื้นทดสอบแบน</p><p class="acc">เสร็จเมื่อ: กล่องทุกกล่องอยู่ตรงตำแหน่งที่ระบุ และผู้เล่นวิ่งจากฟาร์มถึงศาลากลางได้ในประมาณ 45 วินาที</p></div></div>
+    <div><b>W2</b><div><p>สร้าง heightmap ตามแผนความสูง โหลดเข้า Terrain3D และเพิ่มการแสดงตาราง chunk สำหรับดีบัก</p><p class="acc">เสร็จเมื่อ: ไม่มีถนนใดชันเกินขีดจำกัดของประเภท และมองเห็นหอศาลากลางได้จากลานฟาร์มและท่าเรือริมทะเลสาบ</p></div></div>
+    <div><b>W3</b><div><p>แหล่งน้ำ: โมเดลแม่น้ำ ลำธาร ทางน้ำออก และทะเลสาบจาก Blender, water shader v1, น้ำตกสามแห่ง</p><p class="acc">เสร็จเมื่อ: น้ำไหลลงเนินทุกจุด และขอบฟองตรงกับภาพอ้างอิง</p></div></div>
+    <div><b>W4</b><div><p>ระบายถนนลงบนภูมิประเทศ เพิ่มข้อมูล Path3D วางสะพานทั้งแปดพร้อม collision</p><p class="acc">เสร็จเมื่อ: เดินไปถึงสถานที่สำคัญทุกแห่งได้โดยไม่ต้องกระโดด</p></div></div>
+    <div><b>W5</b><div><p>ทำ blockout สีเทาใน Blender ของอาคารทุกหลังในหมู่บ้านและฟาร์มตามขนาดจริง แล้วแทนที่กล่อง</p><p class="acc">เสร็จเมื่อ: ขนาดฐานตรงกับตารางพิกัดภายใน 0.5 ม. และไม่มีอะไรทับถนน</p></div></div>
+    <div><b>W6</b><div><p>สร้างพื้นที่ก่อสร้างเป็น Area3D จาก registry และชุดชิ้นส่วนก่อสร้างแบบโมดูลาร์สีเทา</p><p class="acc">เสร็จเมื่อ: บ้านทดสอบจากชิ้นส่วนชุดนี้ snap ลงแปลง A ได้ และถูกปฏิเสธเมื่อวางบนถนน</p></div></div>
+    <div><b>W7</b><div><p>กระจายพืชพรรณต่อ chunk ต้นไม้และหินที่เก็บได้พร้อม ID ถาวร</p><p class="acc">เสร็จเมื่อ: ของที่เก็บได้ทุกชิ้นมี ID ไม่ซ้ำ และเครื่องมือตรวจ ID ไม่พบรายการซ้ำ</p></div></div>
+    <div><b>W8</b><div><p>ปรับงานภาพในพื้นที่ MVP: ฟาร์ม ถนนไปฟาร์ม หมู่บ้าน ขอบป่า Westwood</p><p class="acc">เสร็จเมื่อ: พื้นที่ MVP ใช้แอสเซ็ตจริงทั้งหมดในสไตล์เดียวกัน</p></div></div>
+    <div><b>W9</b><div><p>ปรับประสิทธิภาพเทียบกับงบ โดยใช้กล้องเบนช์มาร์กและการบินผ่าน</p><p class="acc">เสร็จเมื่อ: คงที่ 60 fps หรือบันทึกทุกจุดที่ไม่ถึงพร้อมตัวเลขที่วัดได้และวิธีแก้</p></div></div>
+  </div>
+</section>
+
+<!-- ================= Decisions ================= -->
+<section>
+  <div class="sheet-h"><span class="letter">?</span><h2>การตัดสินใจก่อนเริ่ม W1</h2></div>
+  <ol class="qs">
+    <li><b>1. ตัวเรนเดอร์ภูมิประเทศ: Terrain3D ✔</b> รุ่นล่าสุด (v1.0.2) ระบุว่ารองรับ Godot 4.4–4.6+ แต่ยังไม่ยืนยันสำหรับ 4.7 งานแรกของ Phase 1 จึงเป็นการทดสอบความเข้ากันได้ ถ้าไม่ผ่าน จะใช้แผนสำรองคือโมเดลภูมิประเทศจาก Blender (หัวข้อ F) โดยใช้ heightmap เดิม</li>
+    <li><b>2. เวอร์ชัน Godot: 4.7.2 ✔</b> สคริปต์ทั้งหมดเขียนสำหรับ Godot 4.7.2 ด้วย GDScript เท่านั้น</li>
+    <li><b>3. ตำแหน่งฟาร์ม: ตามที่วาดไว้ ✔</b> ทางตะวันตกเฉียงใต้ของหมู่บ้านที่ (−165, 8, 170) ระหว่างป่า Westwood กับทุ่งหญ้า</li>
+    <li><b>4. ที่สร้างโปรเจกต์: ยังไม่ได้เลือก</b> โฟลเดอร์บนคอมพิวเตอร์ของคุณ (เชื่อมต่อได้จากเมนู “+”) หรือส่งเป็นไฟล์ที่นี่</li>
+  </ol>
+</section>
+
+<section>
+  <div class="sheet-h"><span class="letter">✓</span><h2>รายการตรวจสอบการพัฒนา</h2></div>
+  <ul class="check">
+    <li class="done">แบบแปลนแผนที่โลก v0.2</li><li class="done">ระบบพิกัดและตาราง chunk</li><li class="done">ประเภทถนนและเครือข่ายแหล่งน้ำ</li>
+    <li class="done">พื้นที่ก่อสร้างและพื้นที่ขยาย</li><li class="done">กลยุทธ์ภูมิประเทศ</li><li class="done">รายการแอสเซ็ต Blender</li><li class="done">ไฟล์ registry สถานที่ (JSON)</li>
+    <li class="done">เลือกเครื่องมือภูมิประเทศ เวอร์ชัน Godot และตำแหน่งฟาร์ม</li>
+    <li>เลือกที่สร้างโปรเจกต์</li><li>W1 โปรเจกต์ + greybox</li><li>W2 ภูมิประเทศจาก heightmap</li><li>W3 แหล่งน้ำ</li><li>W4 ถนนและสะพาน</li>
+    <li>W5 Blockout อาคาร</li><li>W6 พื้นที่ก่อสร้าง + ชุดชิ้นส่วน</li><li>W7 พืชพรรณ + ID</li><li>W8 งานภาพพื้นที่ MVP</li><li>W9 ปรับประสิทธิภาพ</li>
+  </ul>
+</section>
+
+<section>
+  <div class="sheet-h"><span class="letter">{ }</span><h2>Registry สถานที่สำคัญ</h2></div>
+  <p class="sub">พิกัดทั้งหมดในหน้านี้รวมอยู่ในไฟล์เดียว บันทึกเป็น <code>res://resources/world/world_layout.json</code> เครื่องมือ greybox ใน W1 จะอ่านไฟล์นี้ ทำให้แบบแปลนกับตัวเกมไม่คลาดเคลื่อนกัน ไฟล์เก็บทั้งชื่อภาษาอังกฤษ (<code>name</code>) และชื่อภาษาไทย (<code>name_th</code>)</p>
+  <div><button class="btn" id="copy" type="button">คัดลอก JSON</button> <span class="note" id="copied"></span></div>
+  <pre id="json" style="max-height:420px"></pre>
+</section>
+
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const SANS="Figtree, 'Noto Sans Thai', sans-serif", SERIF="Alegreya, 'Noto Serif Thai', Georgia, serif", MONO="'JetBrains Mono', monospace";
+const CAT={
+ civic:{c:"#B8452E",n:"อาคารราชการ"},shop:{c:"#D08A2E",n:"ร้านค้าและที่ทำงาน"},home:{c:"#8C6B4F",n:"บ้าน"},plaza:{c:"#9C8F70",n:"ลานและสวน"},
+ farm:{c:"#5F8A26",n:"ฟาร์ม"},water:{c:"#1A7891",n:"แหล่งน้ำและท่าเรือ"},nature:{c:"#2D6A3B",n:"ป่าและทุ่งหญ้า"},mountain:{c:"#6A5C80",n:"ภูเขา"},spawn:{c:"#E2A800",n:"จุดเกิด"}
+};
+const REG={village:"หมู่บ้าน Haven",farm:"Farm Valley (ฟาร์ม)",forest:"ป่า Westwood",mountain:"เทือกเขา Ridge",lake:"แม่น้ำและทะเลสาบ",meadow:"ทุ่งหญ้า Meadowlands"};
+// id, English name, cat, region, [x,y,z], [w,d]|null, faces, Thai note, major
+const L=[
+ ["town_hall","Town Hall","civic","village",[0,10,-24],[24,18],"S","หอนาฬิกาสูง 22 ม. ยอดอยู่ที่ Y 34 เป็นจุดสังเกตหลักสำหรับนำทาง",1],
+ ["public_square","Public Square & Fountain","plaza","village",[0,10,12],[40,30],"—","น้ำพุอยู่ตรงกลาง ใช้จัดเทศกาลและเป็นจุดนัดพบของ NPC",0],
+ ["marketplace","Central Marketplace","plaza","village",[0,10,58],[50,30],"—","8 แผง เรียงสองแถว แถวละ 4 ทางเดินกลางกว้าง 8 ม.",1],
+ ["general_store","General Store","shop","village",[-48,10,-6],[14,12],"S","ขายเมล็ดพันธุ์ เครื่องมือ ของใช้พื้นฐาน เป็นร้านใน MVP",0],
+ ["cafe","Café","shop","village",[36,10,26],[10,10],"W","ระเบียงหันหน้าสู่ลานกลางเมือง",0],
+ ["restaurant","Restaurant","shop","village",[44,10,64],[14,12],"W","รับซื้อผลผลิตและอาหารที่ปรุงแล้ว",0],
+ ["blacksmith","Blacksmith","shop","village",[-34,10,-58],[12,10],"E","อยู่ทางไปถนนสายเหนือและเหมือง",0],
+ ["carpenter","Carpenter Workshop","shop","village",[-104,10,-34],[16,12],"S","อยู่ริมถนนสายตะวันตกที่มุ่งไปทางแหล่งไม้",0],
+ ["storage_delivery","Storage & Delivery Yard","shop","village",[54,10,-40],[24,18],"E","กล่องส่งสินค้าและลานเกวียนที่ถนนโรงสี",0],
+ ["community_garden","Community Garden","plaza","village",[-110,10,40],[24,18],"—","แปลงปลูกร่วมที่ NPC ดูแล",0],
+ ["small_park","Small Park","plaza","village",[46,10,112],[30,26],"—","สนามหญ้าและม้านั่งริมถนนสายใต้",0],
+ ["res_district","Residential District (Elm Lane)","home","village",[0,11,-125],[200,50],"N/S","บ้าน NPC 12 หลัง ขนาด 8 × 8 ม. ทั้งสองฝั่งถนน Elm Lane",1],
+ ["farmhouse","Starting Farmhouse","farm","farm",[-165,8,170],[14,12],"E","บ้านของผู้เล่น อัปเกรดได้",1],
+ ["spawn","Player Spawn","spawn","farm",[-152,8,182],null,"NE","จุดเริ่มเกมใหม่ หันหน้าไปทางหมู่บ้าน",0],
+ ["well","Water Well","farm","farm",[-148,8,160],[3,3],"—","เติมน้ำใส่บัวรดน้ำ",0],
+ ["kitchen_garden","Kitchen Garden","farm","farm",[-190,8,160],[14,14],"—","แปลงสอนปลูกพืช (tutorial)",0],
+ ["barn","Barn","farm","farm",[-220,8,135],[24,16],"E","วัว แกะ แพะ หมู",0],
+ ["coop","Chicken Coop","farm","farm",[-180,8,120],[10,8],"S","ที่พักไก่",0],
+ ["pasture","Farm Pasture","farm","farm",[-215,8,105],[50,24],"—","ทุ่งเลี้ยงสัตว์มีรั้วข้างโรงนา",0],
+ ["storage_bld","Storage Building","farm","farm",[-118,8,185],[12,10],"W","หีบเก็บของและชั้นวางเครื่องมือ",0],
+ ["greenhouse","Greenhouse","farm","farm",[-225,8,185],[18,12],"E","ปลดล็อกได้ ปลูกพืชนอกฤดูกาล",0],
+ ["starter_field","Starter Field","farm","farm",[-165,8,240],[64,64],"—","กริดไถพรวน 64 × 64 ช่อง ช่องละ 1 ม.",0],
+ ["plot_a","Construction Plot A","farm","farm",[-225,8,240],[32,32],"—","พื้นที่ก่อสร้างอิสระของผู้เล่น",0],
+ ["plot_b","Construction Plot B","farm","farm",[-225,8,288],[32,32],"—","พื้นที่ก่อสร้างอิสระของผู้เล่น",0],
+ ["plot_c","Construction Plot C","farm","farm",[-100,8,240],[32,32],"—","พื้นที่ก่อสร้างอิสระของผู้เล่น",0],
+ ["woodcutter","Woodcutter's Camp","nature","forest",[-300,14,-20],null,"E","ปลายถนนสายตะวันตก มีพ่อค้าไม้",1],
+ ["mushroom_glade","Mushroom Glade","nature","forest",[-400,22,-160],null,"—","ลานโล่งที่มีเห็ดหายาก",0],
+ ["old_oak","Old Oak Clearing","nature","forest",[-380,18,120],null,"—","ต้นโอ๊กยักษ์ จุดเกิดสัตว์ป่า",0],
+ ["fern_pond","Fern Pond","nature","forest",[-330,12,250],null,"—","สระจากน้ำพุ มีกบและแมลงปอ",0],
+ ["hidden_shrine","Hidden Shrine","nature","forest",[-465,30,40],null,"E","ไม่มีทางเดิน ต้องเดินตามลำธารเล็กไปจึงจะพบ",0],
+ ["trailhead","Mountain Trailhead","mountain","mountain",[-10,22,-250],null,"N","ป้ายบอกทางที่เส้นทางแยกออก",0],
+ ["mine","Old Copper Mine","mountain","mountain",[-80,55,-400],null,"S","ทางเข้าเหมือง แร่และอัญมณี",1],
+ ["miners_cabin","Abandoned Miner's Cabin","mountain","mountain",[-120,48,-350],null,"E","สิ่งก่อสร้างร้าง มีบันทึกเนื้อเรื่อง",0],
+ ["watchtower","Ruined Watchtower","mountain","mountain",[-360,70,-425],null,"S","ซากหอและจุดชมวิวเหนือป่า",0],
+ ["summit","Summit Lookout","mountain","mountain",[60,96,-450],null,"S","มองเห็นทั้งหุบเขาได้ดีที่สุด",1],
+ ["echo_cave","Echo Cave","mountain","mountain",[390,62,-390],null,"SW","ระบบถ้ำ มีคริสตัล",0],
+ ["creek_spring","Willow Creek Spring","water","mountain",[-180,80,-465],null,"—","ต้นน้ำของลำธาร Willow",0],
+ ["willow_falls","Willow Falls","water","mountain",[-170,40,-330],null,"S","ตกลงมา 8 ม.",0],
+ ["river_spring","Haven River Spring","water","mountain",[310,110,-485],null,"—","ต้นน้ำของแม่น้ำ Haven",0],
+ ["highfall","Highfall Waterfall","water","mountain",[290,72,-360],null,"SW","ตกลงมา 18 ม. สู่แอ่งน้ำที่ Y 54",1],
+ ["old_mill","Old Mill","water","lake",[238,19,-125],[12,10],"W","กังหันน้ำบนฝั่งตะวันออก ผลิตแป้ง",0],
+ ["river_fishing","River Fishing Spot","water","lake",[203,6,-62],null,"E","ตลิ่งฝั่งตะวันตกที่ลดระดับลง ตกปลาแม่น้ำได้",0],
+ ["mirror_lake","Mirror Lake","water","lake",[360,0,80],[220,240],"—","ปลาทะเลสาบ ลึกที่สุดตรงกลาง (−8)",1],
+ ["lakeside_landing","Lakeside Landing","water","lake",[258,1,95],null,"E","ท่าเรือยาว 14 ม. ปลายถนนสายตะวันออก จอดเรือได้",0],
+ ["willow_isle","Willow Isle","nature","lake",[380,2,110],null,"—","เกาะเล็ก ลุยน้ำตื้นไปถึงได้จากทางใต้",0],
+ ["fishing_pier","East Fishing Pier","water","lake",[462,1,120],null,"W","ชมพระอาทิตย์ขึ้นโดยมองย้อนไปทางหมู่บ้าน",0],
+ ["fisher_cottage","Fisher's Cottage","home","lake",[440,8,-50],[10,8],"SW","บ้าน NPC ชาวประมงที่ฝั่งไกล",0],
+ ["outflow_cascade","Outflow Cascade","water","lake",[305,0,280],null,"S","น้ำตก 3 ม. ไหลลงสู่ทุ่งหญ้า",0],
+ ["wildflowers","Wildflower Fields","nature","meadow",[-60,6,350],null,"—","ดอกไม้ ผึ้ง สีสันตามฤดูกาล",0],
+ ["grazing","Grazing Commons","nature","meadow",[110,6,370],null,"—","ทุ่งเลี้ยงสัตว์ที่ใช้ร่วมกัน",0],
+ ["big_pasture","Large Pasture","nature","meadow",[-120,8,470],null,"—","ทุ่งเลี้ยงสัตว์ใหญ่ในอนาคต",0],
+ ["windmill_hill","Windmill Hill","nature","meadow",[40,18,470],null,"N","กังหันลมและจุดชมวิว บังขอบโลกด้านใต้",1]
+];
+const TH={
+ town_hall:"ศาลากลาง",public_square:"ลานกลางเมืองและน้ำพุ",marketplace:"ตลาดกลาง",general_store:"ร้านขายของทั่วไป",cafe:"คาเฟ่",restaurant:"ร้านอาหาร",
+ blacksmith:"ช่างตีเหล็ก",carpenter:"โรงช่างไม้",storage_delivery:"ลานเก็บของและจัดส่ง",community_garden:"สวนชุมชน",small_park:"สวนสาธารณะเล็ก",
+ res_district:"ย่านที่พักอาศัย (Elm Lane)",farmhouse:"บ้านไร่เริ่มต้น",spawn:"จุดเกิดผู้เล่น",well:"บ่อน้ำ",kitchen_garden:"แปลงผักครัว",barn:"โรงนา",
+ coop:"เล้าไก่",pasture:"ทุ่งเลี้ยงสัตว์ในฟาร์ม",storage_bld:"อาคารเก็บของ",greenhouse:"เรือนกระจก",starter_field:"แปลงนาเริ่มต้น",
+ plot_a:"แปลงก่อสร้าง A",plot_b:"แปลงก่อสร้าง B",plot_c:"แปลงก่อสร้าง C",woodcutter:"แคมป์คนตัดไม้",mushroom_glade:"ลานเห็ด",old_oak:"ลานต้นโอ๊กเก่า",
+ fern_pond:"สระเฟิร์น",hidden_shrine:"ศาลลับ",trailhead:"จุดเริ่มเส้นทางขึ้นเขา",mine:"เหมืองทองแดงเก่า",miners_cabin:"กระท่อมคนงานเหมืองร้าง",
+ watchtower:"หอสังเกตการณ์ร้าง",summit:"จุดชมวิวยอดเขา",echo_cave:"ถ้ำเสียงสะท้อน",creek_spring:"ต้นน้ำลำธาร Willow",willow_falls:"น้ำตก Willow",
+ river_spring:"ต้นน้ำแม่น้ำ Haven",highfall:"น้ำตก Highfall",old_mill:"โรงสีเก่า",river_fishing:"จุดตกปลาริมแม่น้ำ",mirror_lake:"ทะเลสาบ Mirror",
+ lakeside_landing:"ท่าเรือริมทะเลสาบ",willow_isle:"เกาะ Willow",fishing_pier:"สะพานตกปลาฝั่งตะวันออก",fisher_cottage:"กระท่อมชาวประมง",
+ outflow_cascade:"น้ำตกทางน้ำออก",wildflowers:"ทุ่งดอกไม้ป่า",grazing:"ทุ่งเลี้ยงสัตว์ส่วนรวม",big_pasture:"ทุ่งเลี้ยงสัตว์ขนาดใหญ่",windmill_hill:"เนินกังหันลม"
+};
+const nm=id=>TH[id]||id;
+const HOUSES=[];[-90,-60,-30,30,60,90].forEach(x=>{HOUSES.push([x,-112]);HOUSES.push([x,-138]);});
+const STALLS=(()=>{const a=[];for(let i=0;i<4;i++){a.push([-10,46+i*7.5]);a.push([10,46+i*7.5]);}return a})();
+// id, English name, Thai name, Thai crossing, [x,y,z], span, width, Thai build, rotY
+const BRIDGES=[
+ ["B1","Mill Bridge","สะพานโรงสี","ถนนโรงสีข้ามแม่น้ำ Haven",[206,19,-120],16,6,"หิน",15],
+ ["B2","Inlet Footbridge","สะพานคนเดินปากแม่น้ำ","ทางรอบทะเลสาบข้ามปากแม่น้ำ",[276,1.5,-25],14,3,"ไม้",-40],
+ ["B3","Outflow Footbridge","สะพานคนเดินทางน้ำออก","ทางรอบทะเลสาบข้ามทางน้ำออก",[325,1.5,215],14,3,"ไม้",70],
+ ["B4","Forest Bridge","สะพานป่า","ถนนสายตะวันตกข้ามลำธาร Willow",[-226,9,-15],10,6,"ไม้ (สไตล์ภาพอ้างอิง)",10],
+ ["B5","Meadow Bridge","สะพานทุ่งหญ้า","ถนนสายใต้ข้ามลำธาร Willow",[37,4,437],10,6,"ไม้",80],
+ ["B6","Pasture Footbridge","สะพานคนเดินทุ่งเลี้ยงสัตว์","ทางเดินทุ่งเลี้ยงสัตว์ข้ามลำธาร Willow",[-110,5,403],8,2.5,"ไม้",75],
+ ["B7","East Meadow Bridge","สะพานทุ่งหญ้าตะวันออก","ทางทุ่งหญ้าข้ามทางน้ำออก",[308,3,340],12,4,"ไม้",0],
+ ["B8","Creek Log Bridge","สะพานซุงข้ามลำธาร","เส้นทางสันเขาข้ามลำธาร Willow",[-174,46,-380],8,2,"ซุง",0]
+];
+// id, English name, Thai name, class, width, Thai surface, points
+const ROADS=[
+ ["R0","Village Ring Road","ถนนวงแหวนหมู่บ้าน","ring",5,"หินปูถนน",null],
+ ["R1","Market Street","ถนนตลาด","street",5,"หินปูถนน",[[-88,12],[-20,12]]],
+ ["R1b","Market Street E","ถนนตลาด","street",5,"หินปูถนน",[[20,12],[88,12]]],
+ ["R2","Hall Street","ถนนศาลากลาง","street",5,"หินปูถนน",[[0,27],[0,43]]],
+ ["R2b","Hall Street S","ถนนศาลากลาง","street",5,"หินปูถนน",[[0,73],[0,104]]],
+ ["R2c","Hall Street N","ถนนศาลากลาง","street",5,"หินปูถนน",[[0,-33],[0,-80]]],
+ ["R3","Garden Walk","ทางเดินสวน","street",5,"หินปูถนน",[[-70,68],[-22,26]]],
+ ["R4","Elm Lane","ถนน Elm Lane","street",5,"หินปูถนน",[[-105,-125],[105,-125]]],
+ ["R5","West Road","ถนนสายตะวันตก","road",6,"ดิน",[[-88,12],[-170,0],[-226,-15],[-300,-20]]],
+ ["R6","Farm Road","ถนนไปฟาร์ม","road",6,"ดิน",[[-70,68],[-110,125],[-140,175],[-158,176]]],
+ ["R7","North Road","ถนนสายเหนือ","road",6,"ดิน → กรวด",[[0,-80],[-5,-150],[-10,-250],[-50,-320],[-80,-395]]],
+ ["R8","Mill Road","ถนนโรงสี","road",6,"ดิน",[[62,-53],[140,-100],[206,-120],[238,-125]]],
+ ["R9","East Road","ถนนสายตะวันออก","road",6,"ดิน",[[88,12],[170,45],[250,88]]],
+ ["R10","South Road","ถนนสายใต้","road",6,"ดิน",[[0,104],[10,200],[30,300],[37,437],[40,460]]],
+ ["R11","Farm South Track","ทางฟาร์มด้านใต้","lane",4,"ดิน",[[-140,175],[-128,210],[-128,280],[-120,305]]],
+ ["R12","Meadow Lane","ทางทุ่งหญ้า","lane",4,"ดิน",[[-120,305],[-60,335],[30,300],[120,325],[220,320],[308,340],[350,330]]],
+ ["P1","Lake Loop","ทางเดินรอบทะเลสาบ","loop",2,"ทางเดินเท้า",null],
+ ["P2","Forest Path North","ทางเดินป่าเหนือ","path",2,"ทางเดินเท้า",[[-300,-20],[-350,-90],[-400,-160]]],
+ ["P3","Forest Path South","ทางเดินป่าใต้","path",2,"ทางเดินเท้า",[[-300,-20],[-340,50],[-380,120],[-330,250]]],
+ ["P4","Pasture Path","ทางเดินทุ่งเลี้ยงสัตว์","path",2,"ทางเดินเท้า",[[-100,328],[-110,403],[-120,470]]],
+ ["P5","Riverside Path","ทางเดินริมแม่น้ำ","path",2,"ทางเดินเท้า",[[140,-100],[203,-62],[250,-30]]],
+ ["T1","Highfall Trail","เส้นทาง Highfall","trail",1.5,"หินและกรวด",[[238,-125],[250,-200],[265,-290],[290,-355]]],
+ ["T2","Summit Trail","เส้นทางยอดเขา","trail",1.5,"หินและกรวด",[[-50,-320],[10,-400],[60,-450]]],
+ ["T3","Ridge Trail","เส้นทางสันเขา","trail",1.5,"หินและกรวด",[[-80,-395],[-120,-350],[-174,-380],[-260,-400],[-360,-425]]],
+ ["T4","Cave Trail","เส้นทางถ้ำ","trail",1.5,"หินและกรวด",[[290,-355],[340,-380],[390,-390]]]
+];
+const RIVER=[[310,-485],[300,-420],[290,-360],[265,-300],[240,-240],[215,-170],[206,-120],[203,-62],[230,-25],[280,-8]];
+const OUTFLOW=[[330,198],[305,280],[310,360],[325,440],[345,500]];
+const CREEK=[[-180,-465],[-176,-400],[-170,-330],[-200,-200],[-215,-60],[-240,40],[-262,120],[-266,200],[-252,290],[-200,360],[-120,400],[-20,428],[60,440],[200,452],[325,440]];
+const LAKE={cx:360,cz:80,rx:110,rz:120};
+const ISLE={cx:380,cz:110,r:18};
+const RING={cx:0,cz:12,rx:88,rz:92};
+// id, Thai name, type, x, z, w, d, Thai use, Thai builder, English name
+const ZONES=[
+ ["Z1","แปลงฟาร์ม A–C","build",null,null,null,null,"บ้าน โรงเก็บของ และของตกแต่งของผู้เล่นใน MVP","ผู้เล่น","Farm Plots A–C"],
+ ["Z2","พื้นที่ภายในฟาร์ม","build",-245,92,157,220,"วางรั้ว แปลงปลูก อาคารสัตว์ได้อิสระในทุกที่ที่ยังว่าง","ผู้เล่น","Farm interior"],
+ ["X1","แปลงก่อสร้างในทุ่งหญ้า","reserve",160,335,100,60,"ที่ตั้งบ้านหลังที่สอง กระท่อม เกสต์เฮาส์","ผู้เล่น (ปลดล็อก)","Meadow Building Plots"],
+ ["X2","พื้นที่ทำนาในทุ่งหญ้า","reserve",-40,365,120,50,"แปลงนาขนาดใหญ่เมื่อมีระบบชลประทานและเครื่องจักร","ผู้เล่น (ปลดล็อก)","Meadow Farmland"],
+ ["X3","ขยายย่านที่พักอาศัย","reserve",115,-150,60,50,"บ้าน NPC เพิ่มอีก 6 หลังเมื่อหมู่บ้านเติบโต","NPC","Residential Expansion"],
+ ["X4","พื้นที่เติมหมู่บ้านฝั่งตะวันตก","reserve",-150,-110,40,40,"หอสมาคม คลินิก หรือห้องสมุด","NPC","Village Infill West"],
+ ["X5","แปลงริมทะเลสาบ","reserve",380,215,80,45,"กระท่อมริมทะเลสาบ โรงเก็บเรือ ร้านอุปกรณ์ตกปลา","ผู้เล่นหรือ NPC","Lakeshore Lots"],
+ ["X6","ดินแดนตะวันตก","edge",-500,null,null,null,"ภูมิภาคใหม่เลย x −500 ไปถึงได้ทางเดินป่าเหนือ","แผนที่ในอนาคต","Western Wilds"],
+ ["X7","ที่ราบสูงทางเหนือ","edge",null,-500,null,null,"ภูมิภาคหิมะ ต่อจากอุโมงค์เหมืองที่เตรียมไว้","แผนที่ในอนาคต","Northern Highlands"],
+ ["X8","เนินเขาทางตะวันออก","edge",500,null,null,null,"หมู่บ้านที่สองหลังเนินเขาริมทะเลสาบ","แผนที่ในอนาคต","Eastern Hills"],
+ ["X9","ชายฝั่งทางใต้","edge",null,500,null,null,"ที่ราบลุ่มตามทางน้ำออก ทางออกอยู่ที่ (345, 500)","แผนที่ในอนาคต","Southern Shore"]
+];
+const ASSETS=[
+ ["ภูมิประเทศและหิน","SM_Rock_Small_01–04","0.5–1.5 ม.","150 / 60 / —","ไม่มี (เดินผ่านได้) หรือทรงกลม","วาง 40 + กระจาย"],
+ ["ภูมิประเทศและหิน","SM_Rock_Large_01–03","2–5 ม.","800 / 300 / 80","COL_ convex","เก็บได้: 60"],
+ ["ภูมิประเทศและหิน","SM_Cliff_01–06","10–30 ม.","3,000 / 1,000 / 300","COL_ trimesh แบบลดรูป","ภูเขา: ~40"],
+ ["ภูมิประเทศและหิน","SM_CaveMouth_01, SM_MineEntrance_01","12 × 10 ม.","4,000 / 1,500 / —","COL_ trimesh","2"],
+ ["ภูมิประเทศและหิน","SM_Riverbank_Stone_01–04","4–8 ม.","600 / 200 / 60","COL_ convex","ช่วงแม่น้ำใกล้หมู่บ้าน"],
+ ["พืชพรรณ","SM_Tree_Oak_01–03, SM_Tree_Birch_01–02","10–14 ม.","3,500 / 1,200 / การ์ด","COL_ ทรงกระบอกที่ลำต้น","กระจาย + เก็บได้"],
+ ["พืชพรรณ","SM_Tree_Pine_01–03","12–18 ม.","2,500 / 900 / การ์ด","COL_ ทรงกระบอกที่ลำต้น","ป่า Westwood ภูเขา"],
+ ["พืชพรรณ","SM_Bush_01–04, SM_Fern_01–02","0.5–2 ม.","400 / 120 / —","ไม่มี","กระจาย"],
+ ["พืชพรรณ","SM_Grass_Clump_01–03, SM_Flower_Patch_01–05","0.3–0.6 ม.","≤ 60","ไม่มี","กระจาย (shader ลมพัด)"],
+ ["พืชพรรณ","SM_Mushroom_01–03, SM_Reed_01–02, SM_Stump_01","0.2–2 ม.","150–400","ไม่มี / Area3D สำหรับเก็บ","ของป่า + ขอบน้ำ"],
+ ["แหล่งน้ำ","SM_River_Haven_01, SM_Creek_Willow_01, SM_Outflow_01","ริบบิ้น","≈ 1 quad ต่อ 2 ม.","ไม่มี (Area3D สำหรับว่ายน้ำ/ตกปลา)","อย่างละ 1"],
+ ["แหล่งน้ำ","SM_Lake_Mirror_01","220 × 240 ม.","2,000","ไม่มี","1"],
+ ["แหล่งน้ำ","SM_Waterfall_Highfall_01, SM_Waterfall_Small_01","18 ม. / 3–8 ม.","500","ไม่มี","3"],
+ ["สถาปัตยกรรม","SM_TownHall_01","24 × 18 ม. สูง 34 ม.","12,000 / 4,000 / 1,000","COL_ กล่อง","1"],
+ ["สถาปัตยกรรม","SM_House_Log_01–04","8 × 8 ม.","4,000 / 1,500 / 400","COL_ กล่อง","หมู่บ้าน 12 + ฐานบ้านไร่"],
+ ["สถาปัตยกรรม","SM_Shop_GeneralStore_01, _Cafe_01, _Restaurant_01, _Blacksmith_01, _Carpenter_01","10–16 ม.","6,000 / 2,000 / 500","COL_ กล่อง","5"],
+ ["สถาปัตยกรรม","SM_Farmhouse_01, SM_Barn_01, SM_Coop_01, SM_Shed_Storage_01, SM_Greenhouse_01","3–24 ม.","2,000–6,000","COL_ กล่อง","5"],
+ ["สถาปัตยกรรม","SM_Market_Stall_01–02, SM_Well_01, SM_Fountain_01","3–8 ม.","800–2,500","COL_ กล่อง / ทรงกระบอก","แผง 8, อย่างละ 1"],
+ ["สถาปัตยกรรม","SM_Mill_Water_01, SM_Windmill_01, SM_Cabin_Fisher_01","10–20 ม.","6,000 / 2,000 / 500","COL_ กล่อง","อย่างละ 1"],
+ ["สถาปัตยกรรม","SM_Ruin_Watchtower_01, SM_Ruin_Cabin_01, SM_Shrine_01","4–14 ม.","3,000 / 1,000 / 300","COL_ กล่อง","อย่างละ 1"],
+ ["โครงสร้างพื้นฐาน","SM_Bridge_Stone_01","16 × 6 ม.","3,000 / 1,000 / 300","COL_ พื้นสะพาน + ราว","1"],
+ ["โครงสร้างพื้นฐาน","SM_Bridge_Wood_01 (จากภาพอ้างอิง), SM_Bridge_Foot_01, SM_Bridge_Log_01","8–14 ม.","1,500 / 500 / 150","COL_ พื้นสะพาน + ราว","6"],
+ ["โครงสร้างพื้นฐาน","SM_Dock_Segment_2m_01, SM_Dock_End_01","โมดูล 2 ม.","300","COL_ กล่อง","ท่าเรือ + สะพานตกปลา"],
+ ["โครงสร้างพื้นฐาน","SM_Fence_Wood_2m_01, SM_Fence_Gate_01, SM_Fence_Post_01","โมดูล 2 ม.","120–300","COL_ กล่อง","ฟาร์ม ทุ่งเลี้ยงสัตว์"],
+ ["โครงสร้างพื้นฐาน","SM_Lamp_Street_01, SM_Signpost_01, SM_Bench_01, SM_Cobble_Kerb_2m_01","0.5–4 ม.","200–800","COL_ กล่อง","หมู่บ้าน ทางแยก"],
+ ["ชุดชิ้นส่วนก่อสร้าง","SM_Kit_Foundation_4x4, SM_Kit_Floor_2x2, SM_Kit_Wall_2m, SM_Kit_Wall_Door_2m, SM_Kit_Wall_Window_2m, SM_Kit_Roof_2m, SM_Kit_Roof_Edge_2m, SM_Kit_Stairs_2m","โมดูล 2 ม. ผนังสูง 3 ม.","ชิ้นละ 100–600","COL_ กล่องต่อชิ้น","ระบบก่อสร้างของผู้เล่น"],
+ ["ฉากหลัง","SM_Backdrop_Mountains_N_01, SM_Backdrop_Hills_01–02, SM_Backdrop_TreeWall_01","0.5–1 กม.","ชิ้นละ 5,000","ไม่มี","4–6"]
+];
+
+/* ===================== HELPERS ===================== */
+const NS="http://www.w3.org/2000/svg";
+const COLS="ABCDEFGH";
+const chunkOf=(x,z)=>COLS[Math.min(7,Math.max(0,Math.floor((x+500)/125)))]+(Math.min(7,Math.max(0,Math.floor((z+500)/125)))+1);
+function smooth(p){if(p.length<3)return "M"+p.map(q=>q.join(" ")).join(" L");
+ let d=`M${p[0][0]} ${p[0][1]}`;
+ for(let i=0;i<p.length-1;i++){const p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;
+  const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];
+  d+=` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`;}
+ return d;}
+const plen=p=>p.slice(1).reduce((s,q,i)=>s+Math.hypot(q[0]-p[i][0],q[1]-p[i][1]),0);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs){const v=attrs[k];
+ if(typeof v==="string"&&v.startsWith("var("))e.style.setProperty(k,v);else e.setAttribute(k,v);}if(parent)parent.appendChild(e);return e;}
+
+const SHAPES={
+ mount:"M-500 -500 H500 V-290 Q430 -262 350 -280 Q300 -250 262 -268 Q180 -236 100 -258 Q20 -226 -60 -252 Q-140 -276 -200 -256 Q-262 -246 -320 -286 Q-420 -300 -500 -292 Z",
+ forest:"M-500 -292 Q-420 -300 -320 -286 Q-282 -230 -276 -140 Q-262 -60 -268 20 Q-280 120 -280 200 Q-276 290 -290 340 Q-340 382 -410 372 Q-460 392 -500 384 Z",
+ eastwood:"M500 -290 Q440 -262 420 -200 Q430 -130 470 -105 Q490 -98 500 -100 Z",
+ eastshore:"M500 210 Q478 250 486 320 Q492 360 500 368 Z",
+ meadow:"M-500 384 Q-460 392 -410 372 Q-340 382 -290 340 Q-276 300 -245 312 L-88 312 Q-40 282 40 286 Q160 292 250 270 Q300 250 330 212 Q410 232 500 216 L500 500 L-500 500 Z",
+ farm:"M-245 92 L-88 92 L-88 312 L-245 312 Z",
+ village:"M-150 0 A150 170 0 1 0 150 0 A150 170 0 1 0 -150 0 Z"
+};
+const CONTOURS=[
+ [20,"M-500 -240 Q-380 -226 -290 -236 Q-150 -212 -40 -224 Q60 -198 150 -226 Q250 -210 380 -240 Q450 -228 500 -240"],
+ [40,"M-500 -292 Q-400 -286 -320 -296 Q-180 -268 -60 -286 Q60 -262 160 -296 Q280 -278 380 -296 Q450 -290 500 -298"],
+ [80,"M-500 -378 Q-420 -372 -340 -390 Q-220 -360 -100 -378 Q40 -350 120 -384 Q260 -362 400 -388 Q460 -380 500 -392"],
+ [120,"M-500 -452 Q-400 -444 -300 -466 Q-150 -438 -20 -460 Q80 -430 180 -466 Q320 -448 420 -470 Q470 -464 500 -472"],
+ [20,"M-330 -200 Q-290 -60 -300 80 Q-310 220 -350 330 Q-420 360 -470 300 Q-490 0 -470 -220 Q-420 -270 -330 -200 Z"],
+ [30,"M-430 -120 Q-400 -20 -420 120 Q-460 160 -480 100 Q-490 -20 -470 -110 Q-450 -140 -430 -120 Z"],
+ [12,"M-30 500 Q-20 448 40 446 Q100 448 110 500"]
+];
+
+/* ===================== MAP ===================== */
+function render(svg,k,opt){
+ const p=opt.id;
+ el("defs",{},svg).innerHTML=`
+  <pattern id="${p}tree" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#9CC08A"/><circle cx="6" cy="7" r="4.5" fill="#7FAE6E"/><circle cx="17" cy="16" r="5" fill="#76A866"/><path d="M15 1 L18 7 L12 7Z" fill="#5F9466"/></pattern>
+  <pattern id="${p}mnt" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="14" height="14" fill="#CEC6B6"/><line x1="0" y1="0" x2="0" y2="14" stroke="#B4AA97" stroke-width="2"/></pattern>
+  <pattern id="${p}farm" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#EBDCAB"/><line x1="0" y1="5" x2="10" y2="5" stroke="#DEC98F" stroke-width="1.4"/></pattern>
+  <pattern id="${p}res" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#6A5C80" stroke-width="1.4" opacity=".45"/></pattern>
+  <pattern id="${p}bld" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#2F7D46" stroke-width="1.4" opacity=".4"/></pattern>`;
+ el("rect",{x:-500,y:-500,width:1000,height:1000,fill:"#DCE7C6"},svg);
+ const g=el("g",{},svg);
+ el("path",{d:SHAPES.meadow,fill:"#E8EAB9"},g);
+ el("path",{d:SHAPES.farm,fill:`url(#${p}farm)`,stroke:"#C9B47A","stroke-width":1.5*k},g);
+ el("path",{d:SHAPES.village,fill:"#EFE3CF",stroke:"#D6C5A6","stroke-width":1.5*k},g);
+ ["forest","eastwood","eastshore"].forEach(s=>el("path",{d:SHAPES[s],fill:`url(#${p}tree)`},g));
+ el("path",{d:SHAPES.mount,fill:`url(#${p}mnt)`},g);
+ const gc=el("g",{class:"lyr-contours"},svg);
+ CONTOURS.forEach(([h,d])=>el("path",{d,fill:"none",stroke:"#8C7F68","stroke-width":1*k,"stroke-dasharray":`${4*k} ${3*k}`,opacity:.8},gc));
+ if(opt.main){[[20,-460,-230],[40,-460,-282],[80,-460,-368],[120,-460,-446]].forEach(([h,x,z])=>{const t=el("text",{x,y:z,"font-size":11,fill:"#6E6250","font-family":MONO,"paint-order":"stroke",stroke:"#DCE7C6","stroke-width":3},gc);t.textContent=h+" ม.";});}
+ const gz=el("g",{class:"lyr-zones"},svg);
+ ZONES.forEach(([id,n,type,x,z,w,d])=>{if(type==="edge"||w==null||id==="Z2")return;
+  el("rect",{x,y:z,width:w,height:d,fill:`url(#${p}${type==="build"?"bld":"res"})`,stroke:type==="build"?"#2F7D46":"#6A5C80","stroke-width":1.2*k,"stroke-dasharray":`${5*k} ${3*k}`},gz);
+  const t=el("text",{x:x+w/2,y:z+d/2+4*k,"text-anchor":"middle","font-size":11*k,"font-weight":600,fill:"#4D4166","font-family":SANS,"paint-order":"stroke",stroke:"rgba(255,255,250,.8)","stroke-width":2.5*k},gz);t.textContent=id;});
+ if(opt.main){[["X6 ←",-494,60,"start"],["↑ X7",-200,-484,"middle"],["X8 →",494,-60,"end"],["↓ X9",420,494,"middle"]].forEach(([s,x,z,a])=>{const t=el("text",{x,y:z,"text-anchor":a,"font-size":12,"font-weight":600,fill:"#4D4166","font-family":SANS,"paint-order":"stroke",stroke:"#F4F4EE","stroke-width":3},gz);t.textContent=s;});}
+ const gw=el("g",{class:"lyr-water"},svg);
+ const mw=opt.main?1.5:1;
+ const water=(pts,w)=>{el("path",{d:smooth(pts),fill:"none",stroke:"#F2FFFF","stroke-width":w+4,"stroke-linecap":"round","stroke-linejoin":"round"},gw);
+  el("path",{d:smooth(pts),fill:"none",stroke:"#5FC6CF","stroke-width":w,"stroke-linecap":"round","stroke-linejoin":"round"},gw);};
+ water(RIVER,11*mw);water(OUTFLOW,8*mw);water(CREEK,5*mw);
+ el("ellipse",{cx:LAKE.cx,cy:LAKE.cz,rx:LAKE.rx+2,ry:LAKE.rz+2,fill:"#F2FFFF"},gw);
+ el("ellipse",{cx:LAKE.cx,cy:LAKE.cz,rx:LAKE.rx,ry:LAKE.rz,fill:"#5FC6CF"},gw);
+ el("ellipse",{cx:LAKE.cx,cy:LAKE.cz,rx:LAKE.rx*.55,ry:LAKE.rz*.55,fill:"#47B3C0",opacity:.7},gw);
+ el("circle",{cx:ISLE.cx,cy:ISLE.cz,r:ISLE.r+2,fill:"#F2FFFF"},gw);el("circle",{cx:ISLE.cx,cy:ISLE.cz,r:ISLE.r,fill:"#9CC08A"},gw);
+ el("circle",{cx:-330,cy:250,r:12,fill:"#5FC6CF",stroke:"#F2FFFF","stroke-width":2},gw);
+ const gr=el("g",{class:"lyr-roads"},svg);
+ const col={ring:"#C29A68",street:"#C29A68",road:"#B48858",lane:"#BE9A6C",path:"#7E5F3E",loop:"#7E5F3E",trail:"#6A5C80"};
+ ROADS.forEach(r=>{const type=r[3],w=r[4];const thin=["path","loop","trail"].includes(type);const sw=thin?Math.max(w,1.6*k):Math.max(w,2.6*k);
+  const a={fill:"none",stroke:col[type],"stroke-width":sw,"stroke-linecap":"round","stroke-linejoin":"round"};
+  if(thin)a["stroke-dasharray"]=type==="trail"?`${2*k} ${3*k}`:`${5*k} ${4*k}`;
+  if(type==="ring")el("ellipse",Object.assign({cx:RING.cx,cy:RING.cz,rx:RING.rx,ry:RING.rz},a),gr);
+  else if(type==="loop")el("ellipse",Object.assign({cx:LAKE.cx,cy:LAKE.cz,rx:LAKE.rx+16,ry:LAKE.rz+16},a),gr);
+  else el("path",Object.assign({d:smooth(r[6])},a),gr);});
+ BRIDGES.forEach(b=>{const pos=b[4],len=b[5],w=b[6],rot=b[8];const bw=Math.max(w,3*k),bl=Math.max(len,8*k);
+  const r=el("rect",{x:pos[0]-bl/2,y:pos[2]-bw/2,width:bl,height:bw,fill:"#6B4A2E",stroke:"#3E2A18","stroke-width":.8*k,transform:`rotate(${rot} ${pos[0]} ${pos[2]})`},gr);
+  el("title",{},r).textContent=`${b[0]} ${b[2]} (${pos.join(", ")})`;});
+ const gf=el("g",{class:"lyr-marks"},svg);
+ HOUSES.forEach(([x,z])=>el("rect",{x:x-4,y:z-4,width:8,height:8,fill:"#8C6B4F",stroke:"#5E4632","stroke-width":.4*k},gf));
+ L.forEach(o=>{const [id,,c,,pos,fp]=o;if(!fp||id==="mirror_lake"||id==="res_district")return;
+  const isArea=(c==="plaza"||c==="farm")&&fp[0]>20;
+  el("rect",{x:pos[0]-fp[0]/2,y:pos[2]-fp[1]/2,width:fp[0],height:fp[1],fill:isArea?"rgba(255,255,255,.35)":CAT[c].c,"fill-opacity":isArea?1:.85,stroke:isArea?CAT[c].c:"#2E241A","stroke-width":(isArea?1.2:.5)*k,"stroke-dasharray":id.startsWith("plot")?`${3*k} ${2*k}`:"none"},gf);});
+ const gg=el("g",{class:"lyr-grid"},svg);
+ for(let i=0;i<=8;i++){const v=-500+i*125;
+  el("line",{x1:v,y1:-500,x2:v,y2:500,stroke:"rgba(41,53,42,.22)","stroke-width":1*k},gg);
+  el("line",{x1:-500,y1:v,x2:500,y2:v,stroke:"rgba(41,53,42,.22)","stroke-width":1*k},gg);
+  if(opt.main&&i<8){const a=el("text",{x:v+62.5,y:-512,"text-anchor":"middle","font-size":13,fill:"#4A5A4C","font-family":MONO},gg);a.textContent=COLS[i];
+   const b=el("text",{x:-518,y:v+67,"text-anchor":"middle","font-size":13,fill:"#4A5A4C","font-family":MONO},gg);b.textContent=i+1;}}
+ if(opt.main){[[-500,"x −500"],[0,"x 0"],[500,"x 500"]].forEach(([v,s])=>{const t=el("text",{x:v,y:540,"text-anchor":"middle","font-size":11,fill:"#4A5A4C","font-family":MONO},gg);t.textContent=s;});}
+ el("rect",{x:-500,y:-500,width:1000,height:1000,fill:"none",stroke:"#29352A","stroke-width":2*k},svg);
+ const gl=el("g",{class:"lyr-labels"},svg);
+ const lab=(s,x,z,size)=>{const t=el("text",{x,y:z,"text-anchor":"middle","font-size":size,"font-family":SERIF,"font-weight":700,fill:"#29352A","paint-order":"stroke",stroke:"rgba(255,255,250,.8)","stroke-width":size*.22},gl);t.textContent=s;};
+ if(opt.main){lab("เทือกเขา Ridge",-160,-474,24);lab("ป่า Westwood",-390,-240,22);lab("หมู่บ้าน Haven",-80,-185,21);
+  lab("ฟาร์ม",-166,330,19);lab("ทุ่งหญ้า Meadowlands",-300,450,22);lab("แม่น้ำ Haven",160,-200,15);lab("ลำธาร Willow",-250,-110,14);lab("ทะเลสาบ Mirror",380,40,19);}
+ const gm=el("g",{class:"lyr-marks"},svg);
+ L.filter(opt.filter).forEach(o=>{const [id,,c,,pos,,,,major]=o;const n=nm(id);
+  const m=el("g",{class:"mk","data-id":id,role:"button","aria-label":n},gm);if(opt.main)m.setAttribute("tabindex","0");
+  el("circle",{cx:pos[0],cy:pos[2],r:(major?7:5)*k,fill:CAT[c].c,stroke:"#fff","stroke-width":1.6*k},m);
+  el("title",{},m).textContent=`${n} (${pos.join(", ")})`;
+  if(!opt.main||major){const t=el("text",{x:pos[0]+(major?10:8)*k,y:pos[2]+4*k,"font-size":(major?12.5:10)*k,"font-weight":600,fill:"#1F2A20","font-family":SANS,"paint-order":"stroke",stroke:"rgba(255,255,250,.88)","stroke-width":3*k,class:"lyr-labels"},m);t.textContent=id==="mirror_lake"?"":n;}
+  m.addEventListener("click",()=>select(id));
+  m.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(id);}});});
+ if(opt.main){
+  BRIDGES.forEach(b=>{const pos=b[4];const t=el("text",{x:pos[0],y:pos[2]-9,"text-anchor":"middle","font-size":10,"font-weight":600,fill:"#3E2A18","font-family":MONO,"paint-order":"stroke",stroke:"rgba(255,255,250,.85)","stroke-width":3,class:"lyr-labels"},gr);t.textContent=b[0];});
+  const cg=el("g",{transform:"translate(455 -420)"},svg);
+  el("circle",{r:30,fill:"rgba(255,255,250,.9)",stroke:"#29352A","stroke-width":1.2},cg);
+  el("path",{d:"M0 -24 L7 0 L0 -5 L-7 0 Z",fill:"#B8452E"},cg);el("path",{d:"M0 24 L7 0 L0 5 L-7 0 Z",fill:"#6A6A6A"},cg);
+  [["N",0,-34],["S",0,44],["E",22,5],["W",-22,5]].forEach(([s,x,y])=>{const t=el("text",{x,y,"text-anchor":"middle","font-size":12,"font-weight":700,fill:"#29352A","font-family":SERIF,"paint-order":"stroke",stroke:"rgba(255,255,250,.9)","stroke-width":3},cg);t.textContent=s;});
+  const sg=el("g",{transform:"translate(-480 484)"},svg);
+  el("rect",{x:-6,y:-16,width:226,height:24,fill:"rgba(255,255,250,.88)",rx:3},sg);
+  el("rect",{x:0,y:-4,width:100,height:6,fill:"#29352A"},sg);el("rect",{x:100,y:-4,width:100,height:6,fill:"#fff",stroke:"#29352A"},sg);
+  [["0",0],["100",100],["200 ม.",200]].forEach(([s,x])=>{const t=el("text",{x,y:-7,"text-anchor":"middle","font-size":10,fill:"#29352A","font-family":MONO},sg);t.textContent=s;});
+ }
+}
+render(document.getElementById("map"),1,{id:"m",main:true,filter:()=>true});
+
+document.getElementById("legend").innerHTML=Object.values(CAT).map(c=>`<span><i class="sw" style="background:${c.c}"></i>${c.n}</span>`).join("")+
+ `<span><i class="sw" style="background:#B48858"></i>ถนน</span><span><i class="sw" style="background:repeating-linear-gradient(90deg,#7E5F3E 0 4px,transparent 4px 7px)"></i>ทางเดินเท้า</span><span><i class="sw" style="background:repeating-linear-gradient(90deg,#6A5C80 0 2px,transparent 2px 5px)"></i>เส้นทางภูเขา</span><span><i class="sw" style="background:#6B4A2E"></i>สะพาน</span><span><i class="sw" style="background:repeating-linear-gradient(-45deg,#2F7D46 0 1.5px,#fff 1.5px 5px)"></i>พื้นที่ก่อสร้าง</span><span><i class="sw" style="background:repeating-linear-gradient(45deg,#6A5C80 0 1.5px,#fff 1.5px 5px)"></i>พื้นที่สงวนเพื่อขยาย</span>`;
+document.querySelectorAll("#layers input").forEach(i=>i.addEventListener("change",()=>document.getElementById("mapwrap").classList.toggle("hide-"+i.dataset.c,!i.checked)));
+
+/* list + info */
+const listEl=document.getElementById("list");
+function drawList(q=""){listEl.querySelectorAll("h4,button").forEach(n=>n.remove());
+ Object.keys(REG).forEach(r=>{const items=L.filter(o=>o[3]===r&&(nm(o[0]).toLowerCase().includes(q)||o[1].toLowerCase().includes(q)));if(!items.length)return;
+  const h=document.createElement("h4");h.textContent=REG[r];listEl.appendChild(h);
+  items.forEach(o=>{const b=document.createElement("button");b.type="button";b.dataset.id=o[0];
+   b.innerHTML=`<span><i class="dot" style="background:${CAT[o[2]].c}"></i>${esc(nm(o[0]))}</span><span>${o[4][0]}, ${o[4][2]}</span>`;
+   b.addEventListener("click",()=>select(o[0]));listEl.appendChild(b);});});}
+drawList();
+document.getElementById("q").addEventListener("input",e=>drawList(e.target.value.trim().toLowerCase()));
+function select(id){const o=L.find(x=>x[0]===id);if(!o)return;const [,en,c,r,p,fp,face,note]=o;
+ document.getElementById("info").innerHTML=`<div class="eyebrow">${REG[r]} · ${CAT[c].n}</div><h3>${esc(nm(id))}</h3><div class="note">${esc(en)}</div>
+  <dl class="kv"><dt>Godot (x, y, z)</dt><dd>(${p.join(", ")})</dd><dt>Blender (X, Y, Z)</dt><dd>(${p[0]}, ${-p[2]}, ${p[1]})</dd>
+  <dt>Chunk</dt><dd>${chunkOf(p[0],p[2])}</dd><dt>ขนาดฐาน</dt><dd>${fp?fp[0]+" × "+fp[1]+" ม.":"จุด"}</dd><dt>หันหน้า</dt><dd>${face}</dd><dt>ID</dt><dd>${id}</dd></dl>
+  <p class="note" style="margin-top:8px">${esc(note)}</p>`;
+ document.querySelectorAll(".mk").forEach(m=>m.classList.toggle("sel",m.dataset.id===id));
+ listEl.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.id===id));}
+select("town_hall");
+
+/* B coordinate table */
+const regsel=document.getElementById("regsel");
+Object.entries(REG).forEach(([k,v])=>{const o=document.createElement("option");o.value=k;o.textContent=v;regsel.appendChild(o);});
+function drawCoords(){const f=regsel.value;let h=`<tr><th>สถานที่</th><th>ID</th><th>x</th><th>y</th><th>z</th><th>ขนาดฐาน</th><th>หันหน้า</th><th>Chunk</th></tr>`;
+ Object.keys(REG).filter(r=>!f||r===f).forEach(r=>{h+=`<tr class="grp"><td colspan="8">${REG[r]}</td></tr>`;
+  L.filter(o=>o[3]===r).forEach(o=>{h+=`<tr><td><i class="dot" style="background:${CAT[o[2]].c}"></i>${esc(nm(o[0]))}<div class="note">${esc(o[7])}</div></td><td class="n">${o[0]}</td><td class="n">${o[4][0]}</td><td class="n">${o[4][1]}</td><td class="n">${o[4][2]}</td><td class="n">${o[5]?o[5][0]+" × "+o[5][1]:"—"}</td><td class="n">${o[6]}</td><td class="n">${chunkOf(o[4][0],o[4][2])}</td></tr>`;});
+  if(r==="village"){h+=`<tr><td>บ้านบนถนน Elm Lane (12 หลัง)<div class="note">หลังละ 8 × 8 ม. แถวเหนือหันไปทางใต้ แถวใต้หันไปทางเหนือ</div></td><td class="n">village.house.*</td><td class="n" colspan="3">x ±30, ±60, ±90 · y 11 · z −112 และ −138</td><td class="n">8 × 8</td><td class="n">N / S</td><td class="n">D3 E3</td></tr>
+   <tr><td>แผงตลาด (8 แผง)<div class="note">แผงละ 4 × 3 ม. สองแถว ระยะห่าง 7.5 ม.</div></td><td class="n">stall_1–8</td><td class="n" colspan="3">x ±10 · y 10 · z 46, 53.5, 61, 68.5</td><td class="n">4 × 3</td><td class="n">หันเข้าทางเดิน</td><td class="n">E4 / D4</td></tr>`;}});
+ if(!f||f==="lake"||f==="meadow"||f==="forest"||f==="mountain"){h+=`<tr class="grp"><td colspan="8">สะพาน</td></tr>`+BRIDGES.map(b=>`<tr><td>${b[0]} ${b[2]}<div class="note">${b[3]}</div></td><td class="n">${b[0].toLowerCase()}</td><td class="n">${b[4][0]}</td><td class="n">${b[4][1]}</td><td class="n">${b[4][2]}</td><td class="n">${b[5]} × ${b[6]}</td><td class="n">หมุน ${b[8]}°</td><td class="n">${chunkOf(b[4][0],b[4][2])}</td></tr>`).join("");}
+ document.getElementById("ctable").innerHTML=h;}
+regsel.addEventListener("change",drawCoords);drawCoords();
+
+/* E tables */
+const ellLen=(a,b)=>Math.round(Math.PI*(3*(a+b)-Math.sqrt((3*a+b)*(a+3*b))));
+const merged={};ROADS.forEach(r=>{const key=r[0].replace(/[bc]$/,"");(merged[key]=merged[key]||[]).push(r);});
+const clsName={ring:"ถนนในหมู่บ้าน",street:"ถนนในหมู่บ้าน",road:"ถนนสายหลัก",lane:"ทางเล็ก",path:"ทางเดินเท้า",loop:"ทางเดินเท้า",trail:"เส้นทางภูเขา"};
+const clsEn={ring:"Village street",street:"Village street",road:"Main road",lane:"Lane",path:"Footpath",loop:"Footpath",trail:"Mountain trail"};
+document.getElementById("rtable").innerHTML=`<tr><th>ID</th><th>ชื่อ</th><th>ประเภท</th><th>จุดพิกัด (x, z)</th><th>กว้าง</th><th>ระยะทาง</th></tr>`+
+ Object.values(merged).map(rs=>{const r=rs[0];const len=r[3]==="ring"?ellLen(RING.rx,RING.rz):r[3]==="loop"?ellLen(LAKE.rx+16,LAKE.rz+16):Math.round(rs.reduce((s,x)=>s+plen(x[6]),0));
+  const pts=r[3]==="ring"?"วงรีศูนย์กลาง (0, 12) รัศมี 88 × 92":r[3]==="loop"?"วงรีศูนย์กลาง (360, 80) รัศมี 126 × 136":rs.map(x=>x[6].map(q=>`(${q[0]},${q[1]})`).join(" → ")).join(" · ");
+  return `<tr><td class="n">${r[0]}</td><td><b>${r[2]}</b><div class="note">${r[5]}</div></td><td>${clsName[r[3]]}</td><td class="n" style="white-space:normal;min-width:240px">${pts}</td><td class="n">${r[4]} ม.</td><td class="n">${len} ม.</td></tr>`;}).join("");
+document.getElementById("btable").innerHTML=`<tr><th>สะพาน</th><th>กลางพื้นสะพาน</th><th>ช่วง × กว้าง</th><th>วัสดุ</th></tr>`+
+ BRIDGES.map(b=>`<tr><td><b>${b[0]}</b> ${b[2]}<div class="note">${b[3]}</div></td><td class="n">${b[4].join(", ")}</td><td class="n">${b[5]} × ${b[6]} ม.</td><td>${b[7]}</td></tr>`).join("");
+const TRIPS=[
+ ["บ้านไร่ → ศาลากลาง",[[-158,176],[-140,175],[-110,125],[-70,68],[-22,26],[0,12],[0,-15]]],
+ ["ศาลากลาง → ท่าเรือริมทะเลสาบ",[[0,-15],[0,12],[20,12],[88,12],[170,45],[250,88]]],
+ ["ศาลากลาง → แคมป์คนตัดไม้",[[0,-15],[0,12],[-20,12],[-88,12],[-170,0],[-226,-15],[-300,-20]]],
+ ["ศาลากลาง → เหมืองทองแดงเก่า",[[0,-33],[0,-80],[-5,-150],[-10,-250],[-50,-320],[-80,-395]]],
+ ["ทางเข้าถนนโรงสี → น้ำตก Highfall",[[62,-53],[140,-100],[206,-120],[238,-125],[250,-200],[265,-290],[290,-355]]],
+ ["บ้านไร่ → เนินกังหันลม",[[-158,176],[-140,175],[-128,210],[-128,280],[-120,305],[-60,335],[30,300],[37,437],[40,460]]]
+];
+const fmt=s=>s<60?`${Math.round(s)} วิ`:`${Math.floor(s/60)} นาที ${String(Math.round(s%60)).padStart(2,"0")} วิ`;
+document.getElementById("ttable").innerHTML=`<tr><th>เส้นทาง</th><th>ระยะทาง</th><th>เดิน (4 ม./วิ)</th><th>วิ่ง (7 ม./วิ)</th></tr>`+
+ TRIPS.map(([n,p])=>{const d=plen(p);return `<tr><td>${n}</td><td class="n">${Math.round(d)} ม.</td><td class="n">${fmt(d/4)}</td><td class="n">${fmt(d/7)}</td></tr>`;}).join("");
+
+/* zones */
+document.getElementById("ztable").innerHTML=`<tr><th>พื้นที่</th><th>ประเภท</th><th>ขอบเขต (x, z, กว้าง × ลึก)</th><th>การใช้งาน</th><th>ผู้สร้าง</th></tr>`+
+ ZONES.map(z=>{let area;if(z[0]==="Z1")area="A (−241…−209, 224…256) · B (−241…−209, 272…304) · C (−116…−84, 224…256)";
+  else if(z[2]==="edge")area=z[3]!=null?(z[3]<0?"x < −500":"x > 500"):(z[4]<0?"z < −500":"z > 500");
+  else area=`(${z[3]}, ${z[4]}) · ${z[5]} × ${z[6]} ม.`;
+  const t={build:"สร้างได้ทันที",reserve:"สงวนไว้",edge:"ขยายแผนที่"}[z[2]];
+  return `<tr><td><b>${z[0]}</b> ${z[1]}</td><td>${t}</td><td class="n" style="white-space:normal">${area}</td><td>${z[7]}</td><td>${z[8]}</td></tr>`;}).join("");
+
+/* chunk matrix */
+const CH={M:["#CEC6B6","ภูเขา"],F:["#8DB585","ป่า"],T:["#DCE7C6","พื้นที่โล่ง / แม่น้ำ"],V:["#EFE3CF","หมู่บ้าน"],R:["#EBDCAB","ฟาร์ม"],D:["#E8EAB9","ทุ่งหญ้า"],W:["#5FC6CF","ทะเลสาบ"]};
+const CM=["MMMMMMMM","MMMMMMMM","FFTVTTTF","FFTVVTWT","FFTVVTWW","FFRRTTWW","FFRDDDTT","FDDDDDTT"];
+let ch=`<div class="h"></div>`+COLS.split("").map(c=>`<div class="h">${c}</div>`).join("");
+CM.forEach((row,i)=>{ch+=`<div class="h">${i+1}</div>`+row.split("").map((c,j)=>`<div style="background:${CH[c][0]};color:#29352A" title="${COLS[j]}${i+1}: x ${-500+j*125}…${-375+j*125}, z ${-500+i*125}…${-375+i*125}">${c}</div>`).join("");});
+document.getElementById("chunks").innerHTML=ch;
+document.getElementById("chunkleg").innerHTML=Object.entries(CH).map(([k,v])=>`<span><i class="sw" style="background:${v[0]}"></i>${k} ${v[1]}</span>`).join("");
+
+/* profiles */
+function profile(id,P,water,ann,axis,caption){const svg=document.getElementById(id);
+ const X=v=>50+(v+500)*(1000/1000), Y=y=>268-(y+10)*1.55;
+ for(let y=0;y<=140;y+=20){el("line",{x1:50,x2:1050,y1:Y(y),y2:Y(y),stroke:"var(--line)","stroke-width":1},svg);
+  const t=el("text",{x:44,y:Y(y)+4,"text-anchor":"end","font-size":11,fill:"var(--muted)","font-family":MONO},svg);t.textContent=y;}
+ water.forEach(([a,b,lvl])=>el("rect",{x:X(a),y:Y(lvl),width:X(b)-X(a),height:Y(-10)-Y(lvl),fill:"#5FC6CF",opacity:.85},svg));
+ const d="M"+P.map(p=>`${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(" L");
+ el("path",{d:d+` L${X(500)} ${Y(-10)} L${X(-500)} ${Y(-10)} Z`,fill:"#9CC08A",opacity:.55},svg);
+ el("path",{d,fill:"none",stroke:"var(--ink)","stroke-width":2},svg);
+ ann.forEach(([v,y,s],i)=>{const up=i%2?46:26;el("line",{x1:X(v),x2:X(v),y1:Y(y)-4,y2:Y(y)-up,stroke:"var(--muted)","stroke-width":1},svg);
+  const t=el("text",{x:X(v),y:Y(y)-up-4,"text-anchor":v>440?"end":v<-440?"start":"middle","font-size":12,fill:"var(--ink)","font-family":SANS,"font-weight":600},svg);t.textContent=s;});
+ [-500,-375,-250,-125,0,125,250,375,500].forEach(v=>{const t=el("text",{x:X(v),y:298,"text-anchor":"middle","font-size":11,fill:"var(--muted)","font-family":MONO},svg);t.textContent=axis+" "+v;});
+ const t=el("text",{x:1050,y:322,"text-anchor":"end","font-size":11,fill:"var(--muted)","font-family":SANS},svg);t.textContent=caption;
+ const t2=el("text",{x:50,y:322,"font-size":11,fill:"var(--muted)","font-family":SANS},svg);t2.textContent="ความสูง Y (ม.)";}
+profile("profNS",
+ [[-500,140],[-460,122],[-420,95],[-380,72],[-340,52],[-300,38],[-260,24],[-220,18],[-170,13],[-138,11],[-112,11],[-90,10],[0,10],[100,10],[150,9],[220,8],[300,6],[360,5],[400,4],[425,2],[437,1],[450,4],[470,13],[485,16],[500,14]],
+ [],[[-460,122,"ยอดเขา 120–150"],[-250,22,"จุดเริ่มเส้นทาง 22"],[-125,11,"Elm Lane 11"],[-24,10,"ศาลากลาง 10"],[58,10,"ตลาด"],[300,6,"ทางทุ่งหญ้า"],[437,1,"ลำธาร Willow"],[480,16,"เนินกังหันลม"]],
+ "z","ภาพตัดตามแนว x = 0 จากเหนือ (ซ้าย) ไปใต้ (ขวา) ขยายแนวตั้ง ×1.55");
+profile("profEW",
+ [[-500,42],[-470,38],[-430,32],[-380,24],[-320,18],[-280,12],[-270,7],[-262,4],[-252,7],[-245,8],[-150,8],[-95,9],[-70,10],[0,10],[88,10],[150,8],[200,5],[235,2],[250,0],[262,-2],[300,-6],[360,-8],[420,-6],[455,-2],[470,0],[480,5],[500,14]],
+ [[250,470,0]],[[-470,38,"สันเขา Westwood 38"],[-262,4,"ลำธาร Willow"],[-165,8,"ฟาร์ม 8"],[0,10,"หมู่บ้าน 10"],[250,0,"ท่าเรือริมทะเลสาบ"],[360,-8,"ทะเลสาบ Mirror (ก้น −8)"],[490,10,"เนินเขาตะวันออก"]],
+ "x","ภาพตัดตามแนว z = 80 จากตะวันตก (ซ้าย) ไปตะวันออก (ขวา) ขยายแนวตั้ง ×1.55");
+
+/* G assets */
+let ah=`<tr><th>แอสเซ็ต</th><th>ขนาดจริง</th><th>สามเหลี่ยม LOD0 / 1 / 2</th><th>Collision</th><th>จำนวนที่ต้องใช้</th></tr>`;let last="";
+ASSETS.forEach(a=>{if(a[0]!==last){ah+=`<tr class="grp"><td colspan="5">${a[0]}</td></tr>`;last=a[0];}
+ ah+=`<tr><td class="n" style="white-space:normal">${a[1]}</td><td class="n" style="white-space:normal">${a[2]}</td><td class="n">${a[3]}</td><td>${a[4]}</td><td>${a[5]}</td></tr>`;});
+document.getElementById("atable").innerHTML=ah;
+
+/* JSON */
+const registry={
+ name:"Haven Valley",version:"0.2",engine:"Godot 4.7.2",terrain:"Terrain3D",units:"metres",axes:{x:"east",y:"up",z:"south (north = -z)"},
+ bounds:{min:[-500,-500],max:[500,500]},chunk_size:125,reference_height:0,player_spawn:[-152,8,182],
+ landmarks:L.map(o=>({id:o[0],name:o[1],name_th:nm(o[0]),category:o[2],region:o[3],position:o[4],footprint:o[5],faces:o[6],chunk:chunkOf(o[4][0],o[4][2])})),
+ village_houses:HOUSES.map(([x,z],i)=>({id:`village.house.${chunkOf(x,z)}.${String(i+1).padStart(4,"0")}`,position:[x,11,z],footprint:[8,8],faces:z<-125?"S":"N"})),
+ market_stalls:STALLS.map(([x,z],i)=>({id:`stall_${i+1}`,position:[x,10,z],footprint:[4,3]})),
+ bridges:BRIDGES.map(b=>({id:b[0],name:b[1],name_th:b[2],position:b[4],span:b[5],width:b[6],rotation_y_deg:b[8]})),
+ roads:ROADS.filter(r=>r[6]).map(r=>({id:r[0],name:r[1],name_th:r[2],class:clsEn[r[3]],width:r[4],points_xz:r[6]})),
+ ring_road:{center_xz:[RING.cx,RING.cz],radii:[RING.rx,RING.rz],width:5},
+ lake_loop:{center_xz:[LAKE.cx,LAKE.cz],radii:[LAKE.rx+16,LAKE.rz+16],width:2},
+ water:{river_xz:RIVER,outflow_xz:OUTFLOW,creek_xz:CREEK,lake:{center:[LAKE.cx,0,LAKE.cz],radii:[LAKE.rx,LAKE.rz],bed_y:-8},island:{center_xz:[ISLE.cx,ISLE.cz],radius:ISLE.r}},
+ zones:[{id:"Z1A",type:"build",rect_xz:[-241,224,32,32]},{id:"Z1B",type:"build",rect_xz:[-241,272,32,32]},{id:"Z1C",type:"build",rect_xz:[-116,224,32,32]}]
+  .concat(ZONES.filter(z=>z[2]!=="edge"&&z[5]!=null).map(z=>({id:z[0],name:z[9],name_th:z[1],type:z[2],rect_xz:[z[3],z[4],z[5],z[6]]})))
+};
+const jsonText=JSON.stringify(registry,(k,v)=>Array.isArray(v)&&v.every(n=>typeof n==="number")?JSON.stringify(v):v,2).replace(/"\[([^\]]*)\]"/g,"[$1]");
+document.getElementById("json").textContent=jsonText;
+function selectPre(){const r=document.createRange();r.selectNodeContents(document.getElementById("json"));const s=getSelection();s.removeAllRanges();s.addRange(r);}
+document.getElementById("copy").addEventListener("click",()=>{const done=m=>document.getElementById("copied").textContent=m;
+ try{navigator.clipboard.writeText(jsonText).then(()=>done("คัดลอกแล้ว"),()=>{selectPre();done("คัดลอกไม่ได้ในหน้านี้ เลือกข้อความไว้ให้แล้ว กด Ctrl+C");});}catch(e){selectPre();done("เลือกข้อความไว้ให้แล้ว กด Ctrl+C");}});
+</script>

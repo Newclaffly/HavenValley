@@ -1,0 +1,2815 @@
+{
+ "name": "Haven Valley",
+ "version": "0.3",
+ "engine": "Godot 4.7.2",
+ "terrain": "Terrain3D",
+ "units": "metres",
+ "axes": {
+  "x": "east",
+  "y": "up",
+  "z": "south (north = -z)"
+ },
+ "bounds": {
+  "min": [
+   -500,
+   -500
+  ],
+  "max": [
+   500,
+   500
+  ]
+ },
+ "chunk_size": 125,
+ "reference_height": 0,
+ "player_spawn": [
+  -152,
+  8,
+  182
+ ],
+ "landmarks": [
+  {
+   "id": "town_hall",
+   "name": "Town Hall",
+   "name_th": "ศาลากลาง",
+   "category": "civic",
+   "region": "village",
+   "position": [
+    0,
+    10,
+    -24
+   ],
+   "footprint": [
+    24,
+    18
+   ],
+   "faces": "S",
+   "chunk": "E4"
+  },
+  {
+   "id": "public_square",
+   "name": "Public Square & Fountain",
+   "name_th": "ลานกลางเมืองและน้ำพุ",
+   "category": "plaza",
+   "region": "village",
+   "position": [
+    0,
+    10,
+    12
+   ],
+   "footprint": [
+    40,
+    30
+   ],
+   "faces": "—",
+   "chunk": "E5"
+  },
+  {
+   "id": "marketplace",
+   "name": "Central Marketplace",
+   "name_th": "ตลาดกลาง",
+   "category": "plaza",
+   "region": "village",
+   "position": [
+    0,
+    10,
+    58
+   ],
+   "footprint": [
+    50,
+    30
+   ],
+   "faces": "—",
+   "chunk": "E5"
+  },
+  {
+   "id": "general_store",
+   "name": "General Store",
+   "name_th": "ร้านขายของทั่วไป",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    -48,
+    10,
+    -6
+   ],
+   "footprint": [
+    14,
+    12
+   ],
+   "faces": "S",
+   "chunk": "D4"
+  },
+  {
+   "id": "cafe",
+   "name": "Café",
+   "name_th": "คาเฟ่",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    36,
+    10,
+    26
+   ],
+   "footprint": [
+    10,
+    10
+   ],
+   "faces": "W",
+   "chunk": "E5"
+  },
+  {
+   "id": "restaurant",
+   "name": "Restaurant",
+   "name_th": "ร้านอาหาร",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    44,
+    10,
+    64
+   ],
+   "footprint": [
+    14,
+    12
+   ],
+   "faces": "W",
+   "chunk": "E5"
+  },
+  {
+   "id": "blacksmith",
+   "name": "Blacksmith",
+   "name_th": "ช่างตีเหล็ก",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    -34,
+    10,
+    -58
+   ],
+   "footprint": [
+    12,
+    10
+   ],
+   "faces": "E",
+   "chunk": "D4"
+  },
+  {
+   "id": "carpenter",
+   "name": "Carpenter Workshop",
+   "name_th": "โรงช่างไม้",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    -104,
+    10,
+    -34
+   ],
+   "footprint": [
+    16,
+    12
+   ],
+   "faces": "S",
+   "chunk": "D4"
+  },
+  {
+   "id": "storage_delivery",
+   "name": "Storage & Delivery Yard",
+   "name_th": "ลานเก็บของและจัดส่ง",
+   "category": "shop",
+   "region": "village",
+   "position": [
+    54,
+    10,
+    -40
+   ],
+   "footprint": [
+    24,
+    18
+   ],
+   "faces": "E",
+   "chunk": "E4"
+  },
+  {
+   "id": "community_garden",
+   "name": "Community Garden",
+   "name_th": "สวนชุมชน",
+   "category": "plaza",
+   "region": "village",
+   "position": [
+    -110,
+    10,
+    40
+   ],
+   "footprint": [
+    24,
+    18
+   ],
+   "faces": "—",
+   "chunk": "D5"
+  },
+  {
+   "id": "small_park",
+   "name": "Small Park",
+   "name_th": "สวนสาธารณะเล็ก",
+   "category": "plaza",
+   "region": "village",
+   "position": [
+    46,
+    10,
+    112
+   ],
+   "footprint": [
+    30,
+    26
+   ],
+   "faces": "—",
+   "chunk": "E5"
+  },
+  {
+   "id": "res_district",
+   "name": "Residential District (Elm Lane)",
+   "name_th": "ย่านที่พักอาศัย (Elm Lane)",
+   "category": "home",
+   "region": "village",
+   "position": [
+    0,
+    11,
+    -125
+   ],
+   "footprint": [
+    200,
+    50
+   ],
+   "faces": "N/S",
+   "chunk": "E4"
+  },
+  {
+   "id": "farmhouse",
+   "name": "Starting Farmhouse",
+   "name_th": "บ้านไร่เริ่มต้น",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -165,
+    8,
+    170
+   ],
+   "footprint": [
+    14,
+    12
+   ],
+   "faces": "E",
+   "chunk": "C6"
+  },
+  {
+   "id": "spawn",
+   "name": "Player Spawn",
+   "name_th": "จุดเกิดผู้เล่น",
+   "category": "spawn",
+   "region": "farm",
+   "position": [
+    -152,
+    8,
+    182
+   ],
+   "footprint": null,
+   "faces": "NE",
+   "chunk": "C6"
+  },
+  {
+   "id": "well",
+   "name": "Water Well",
+   "name_th": "บ่อน้ำ",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -148,
+    8,
+    160
+   ],
+   "footprint": [
+    3,
+    3
+   ],
+   "faces": "—",
+   "chunk": "C6"
+  },
+  {
+   "id": "kitchen_garden",
+   "name": "Kitchen Garden",
+   "name_th": "แปลงผักครัว",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -190,
+    8,
+    160
+   ],
+   "footprint": [
+    14,
+    14
+   ],
+   "faces": "—",
+   "chunk": "C6"
+  },
+  {
+   "id": "barn",
+   "name": "Barn",
+   "name_th": "โรงนา",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -220,
+    8,
+    135
+   ],
+   "footprint": [
+    24,
+    16
+   ],
+   "faces": "E",
+   "chunk": "C6"
+  },
+  {
+   "id": "coop",
+   "name": "Chicken Coop",
+   "name_th": "เล้าไก่",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -180,
+    8,
+    120
+   ],
+   "footprint": [
+    10,
+    8
+   ],
+   "faces": "S",
+   "chunk": "C5"
+  },
+  {
+   "id": "pasture",
+   "name": "Farm Pasture",
+   "name_th": "ทุ่งเลี้ยงสัตว์ในฟาร์ม",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -215,
+    8,
+    105
+   ],
+   "footprint": [
+    50,
+    24
+   ],
+   "faces": "—",
+   "chunk": "C5"
+  },
+  {
+   "id": "storage_bld",
+   "name": "Storage Building",
+   "name_th": "อาคารเก็บของ",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -118,
+    8,
+    185
+   ],
+   "footprint": [
+    12,
+    10
+   ],
+   "faces": "W",
+   "chunk": "D6"
+  },
+  {
+   "id": "greenhouse",
+   "name": "Greenhouse",
+   "name_th": "เรือนกระจก",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -225,
+    8,
+    185
+   ],
+   "footprint": [
+    18,
+    12
+   ],
+   "faces": "E",
+   "chunk": "C6"
+  },
+  {
+   "id": "starter_field",
+   "name": "Starter Field",
+   "name_th": "แปลงนาเริ่มต้น",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -165,
+    8,
+    240
+   ],
+   "footprint": [
+    64,
+    64
+   ],
+   "faces": "—",
+   "chunk": "C6"
+  },
+  {
+   "id": "plot_a",
+   "name": "Construction Plot A",
+   "name_th": "แปลงก่อสร้าง A",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -225,
+    8,
+    240
+   ],
+   "footprint": [
+    32,
+    32
+   ],
+   "faces": "—",
+   "chunk": "C6"
+  },
+  {
+   "id": "plot_b",
+   "name": "Construction Plot B",
+   "name_th": "แปลงก่อสร้าง B",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -225,
+    8,
+    288
+   ],
+   "footprint": [
+    32,
+    32
+   ],
+   "faces": "—",
+   "chunk": "C7"
+  },
+  {
+   "id": "plot_c",
+   "name": "Construction Plot C",
+   "name_th": "แปลงก่อสร้าง C",
+   "category": "farm",
+   "region": "farm",
+   "position": [
+    -100,
+    8,
+    240
+   ],
+   "footprint": [
+    32,
+    32
+   ],
+   "faces": "—",
+   "chunk": "D6"
+  },
+  {
+   "id": "woodcutter",
+   "name": "Woodcutter's Camp",
+   "name_th": "แคมป์คนตัดไม้",
+   "category": "nature",
+   "region": "forest",
+   "position": [
+    -300,
+    14,
+    -20
+   ],
+   "footprint": null,
+   "faces": "E",
+   "chunk": "B4"
+  },
+  {
+   "id": "mushroom_glade",
+   "name": "Mushroom Glade",
+   "name_th": "ลานเห็ด",
+   "category": "nature",
+   "region": "forest",
+   "position": [
+    -400,
+    22,
+    -160
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "A3"
+  },
+  {
+   "id": "old_oak",
+   "name": "Old Oak Clearing",
+   "name_th": "ลานต้นโอ๊กเก่า",
+   "category": "nature",
+   "region": "forest",
+   "position": [
+    -380,
+    18,
+    120
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "A5"
+  },
+  {
+   "id": "fern_pond",
+   "name": "Fern Pond",
+   "name_th": "สระเฟิร์น",
+   "category": "nature",
+   "region": "forest",
+   "position": [
+    -330,
+    12,
+    250
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "B7"
+  },
+  {
+   "id": "hidden_shrine",
+   "name": "Hidden Shrine",
+   "name_th": "ศาลลับ",
+   "category": "nature",
+   "region": "forest",
+   "position": [
+    -465,
+    30,
+    40
+   ],
+   "footprint": null,
+   "faces": "E",
+   "chunk": "A5"
+  },
+  {
+   "id": "trailhead",
+   "name": "Mountain Trailhead",
+   "name_th": "จุดเริ่มเส้นทางขึ้นเขา",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    -10,
+    18,
+    -250
+   ],
+   "footprint": null,
+   "faces": "N",
+   "chunk": "D3"
+  },
+  {
+   "id": "mine",
+   "name": "Old Copper Mine",
+   "name_th": "เหมืองทองแดงเก่า",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    -80,
+    50,
+    -400
+   ],
+   "footprint": null,
+   "faces": "S",
+   "chunk": "D1"
+  },
+  {
+   "id": "miners_cabin",
+   "name": "Abandoned Miner's Cabin",
+   "name_th": "กระท่อมคนงานเหมืองร้าง",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    -120,
+    48,
+    -350
+   ],
+   "footprint": null,
+   "faces": "E",
+   "chunk": "D2"
+  },
+  {
+   "id": "watchtower",
+   "name": "Ruined Watchtower",
+   "name_th": "หอสังเกตการณ์ร้าง",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    -360,
+    62,
+    -425
+   ],
+   "footprint": null,
+   "faces": "S",
+   "chunk": "B1"
+  },
+  {
+   "id": "summit",
+   "name": "Summit Lookout",
+   "name_th": "จุดชมวิวยอดเขา",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    60,
+    96,
+    -450
+   ],
+   "footprint": null,
+   "faces": "S",
+   "chunk": "E1"
+  },
+  {
+   "id": "echo_cave",
+   "name": "Echo Cave",
+   "name_th": "ถ้ำเสียงสะท้อน",
+   "category": "mountain",
+   "region": "mountain",
+   "position": [
+    390,
+    62,
+    -390
+   ],
+   "footprint": null,
+   "faces": "SW",
+   "chunk": "H1"
+  },
+  {
+   "id": "creek_spring",
+   "name": "Willow Creek Spring",
+   "name_th": "ต้นน้ำลำธาร Willow",
+   "category": "water",
+   "region": "mountain",
+   "position": [
+    -180,
+    80,
+    -465
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "C1"
+  },
+  {
+   "id": "willow_falls",
+   "name": "Willow Falls",
+   "name_th": "น้ำตก Willow",
+   "category": "water",
+   "region": "mountain",
+   "position": [
+    -170,
+    40,
+    -330
+   ],
+   "footprint": null,
+   "faces": "S",
+   "chunk": "C2"
+  },
+  {
+   "id": "river_spring",
+   "name": "Haven River Spring",
+   "name_th": "ต้นน้ำแม่น้ำ Haven",
+   "category": "water",
+   "region": "mountain",
+   "position": [
+    310,
+    110,
+    -485
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "G1"
+  },
+  {
+   "id": "highfall",
+   "name": "Highfall Waterfall",
+   "name_th": "น้ำตก Highfall",
+   "category": "water",
+   "region": "mountain",
+   "position": [
+    290,
+    72,
+    -360
+   ],
+   "footprint": null,
+   "faces": "SW",
+   "chunk": "G2"
+  },
+  {
+   "id": "old_mill",
+   "name": "Old Mill",
+   "name_th": "โรงสีเก่า",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    238,
+    19,
+    -125
+   ],
+   "footprint": [
+    12,
+    10
+   ],
+   "faces": "W",
+   "chunk": "F4"
+  },
+  {
+   "id": "river_fishing",
+   "name": "River Fishing Spot",
+   "name_th": "จุดตกปลาริมแม่น้ำ",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    203,
+    6,
+    -62
+   ],
+   "footprint": null,
+   "faces": "E",
+   "chunk": "F4"
+  },
+  {
+   "id": "mirror_lake",
+   "name": "Mirror Lake",
+   "name_th": "ทะเลสาบ Mirror",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    360,
+    0,
+    80
+   ],
+   "footprint": [
+    220,
+    240
+   ],
+   "faces": "—",
+   "chunk": "G5"
+  },
+  {
+   "id": "lakeside_landing",
+   "name": "Lakeside Landing",
+   "name_th": "ท่าเรือริมทะเลสาบ",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    258,
+    1,
+    95
+   ],
+   "footprint": null,
+   "faces": "E",
+   "chunk": "G5"
+  },
+  {
+   "id": "willow_isle",
+   "name": "Willow Isle",
+   "name_th": "เกาะ Willow",
+   "category": "nature",
+   "region": "lake",
+   "position": [
+    380,
+    2,
+    110
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "H5"
+  },
+  {
+   "id": "fishing_pier",
+   "name": "East Fishing Pier",
+   "name_th": "สะพานตกปลาฝั่งตะวันออก",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    462,
+    1,
+    120
+   ],
+   "footprint": null,
+   "faces": "W",
+   "chunk": "H5"
+  },
+  {
+   "id": "fisher_cottage",
+   "name": "Fisher's Cottage",
+   "name_th": "กระท่อมชาวประมง",
+   "category": "home",
+   "region": "lake",
+   "position": [
+    440,
+    8,
+    -50
+   ],
+   "footprint": [
+    10,
+    8
+   ],
+   "faces": "SW",
+   "chunk": "H4"
+  },
+  {
+   "id": "outflow_cascade",
+   "name": "Outflow Cascade",
+   "name_th": "น้ำตกทางน้ำออก",
+   "category": "water",
+   "region": "lake",
+   "position": [
+    305,
+    0,
+    280
+   ],
+   "footprint": null,
+   "faces": "S",
+   "chunk": "G7"
+  },
+  {
+   "id": "wildflowers",
+   "name": "Wildflower Fields",
+   "name_th": "ทุ่งดอกไม้ป่า",
+   "category": "nature",
+   "region": "meadow",
+   "position": [
+    -60,
+    6,
+    350
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "D7"
+  },
+  {
+   "id": "grazing",
+   "name": "Grazing Commons",
+   "name_th": "ทุ่งเลี้ยงสัตว์ส่วนรวม",
+   "category": "nature",
+   "region": "meadow",
+   "position": [
+    110,
+    6,
+    370
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "E7"
+  },
+  {
+   "id": "big_pasture",
+   "name": "Large Pasture",
+   "name_th": "ทุ่งเลี้ยงสัตว์ขนาดใหญ่",
+   "category": "nature",
+   "region": "meadow",
+   "position": [
+    -120,
+    8,
+    470
+   ],
+   "footprint": null,
+   "faces": "—",
+   "chunk": "D8"
+  },
+  {
+   "id": "windmill_hill",
+   "name": "Windmill Hill",
+   "name_th": "เนินกังหันลม",
+   "category": "nature",
+   "region": "meadow",
+   "position": [
+    40,
+    18,
+    470
+   ],
+   "footprint": null,
+   "faces": "N",
+   "chunk": "E8"
+  }
+ ],
+ "village_houses": [
+  {
+   "id": "village.house.D4.0001",
+   "position": [
+    -90,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.D3.0002",
+   "position": [
+    -90,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  },
+  {
+   "id": "village.house.D4.0003",
+   "position": [
+    -60,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.D3.0004",
+   "position": [
+    -60,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  },
+  {
+   "id": "village.house.D4.0005",
+   "position": [
+    -30,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.D3.0006",
+   "position": [
+    -30,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  },
+  {
+   "id": "village.house.E4.0007",
+   "position": [
+    30,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.E3.0008",
+   "position": [
+    30,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  },
+  {
+   "id": "village.house.E4.0009",
+   "position": [
+    60,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.E3.0010",
+   "position": [
+    60,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  },
+  {
+   "id": "village.house.E4.0011",
+   "position": [
+    90,
+    11,
+    -112
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "N"
+  },
+  {
+   "id": "village.house.E3.0012",
+   "position": [
+    90,
+    11,
+    -138
+   ],
+   "footprint": [
+    8,
+    8
+   ],
+   "faces": "S"
+  }
+ ],
+ "market_stalls": [
+  {
+   "id": "stall_1",
+   "position": [
+    -10,
+    10,
+    46
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_2",
+   "position": [
+    10,
+    10,
+    46
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_3",
+   "position": [
+    -10,
+    10,
+    53.5
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_4",
+   "position": [
+    10,
+    10,
+    53.5
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_5",
+   "position": [
+    -10,
+    10,
+    61
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_6",
+   "position": [
+    10,
+    10,
+    61
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_7",
+   "position": [
+    -10,
+    10,
+    68.5
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "stall_8",
+   "position": [
+    10,
+    10,
+    68.5
+   ],
+   "footprint": [
+    4,
+    3
+   ]
+  }
+ ],
+ "bridges": [
+  {
+   "id": "B1",
+   "name": "Mill Bridge",
+   "name_th": "สะพานโรงสี",
+   "position": [
+    206,
+    19,
+    -120
+   ],
+   "span": 16,
+   "width": 6,
+   "rotation_y_deg": 15
+  },
+  {
+   "id": "B2",
+   "name": "Inlet Footbridge",
+   "name_th": "สะพานคนเดินปากแม่น้ำ",
+   "position": [
+    276,
+    1.5,
+    -25
+   ],
+   "span": 14,
+   "width": 3,
+   "rotation_y_deg": -40
+  },
+  {
+   "id": "B3",
+   "name": "Outflow Footbridge",
+   "name_th": "สะพานคนเดินทางน้ำออก",
+   "position": [
+    325,
+    1.5,
+    215
+   ],
+   "span": 14,
+   "width": 3,
+   "rotation_y_deg": 70
+  },
+  {
+   "id": "B4",
+   "name": "Forest Bridge",
+   "name_th": "สะพานป่า",
+   "position": [
+    -226,
+    9,
+    -15
+   ],
+   "span": 10,
+   "width": 6,
+   "rotation_y_deg": 10
+  },
+  {
+   "id": "B5",
+   "name": "Meadow Bridge",
+   "name_th": "สะพานทุ่งหญ้า",
+   "position": [
+    37,
+    4,
+    437
+   ],
+   "span": 10,
+   "width": 6,
+   "rotation_y_deg": 80
+  },
+  {
+   "id": "B6",
+   "name": "Pasture Footbridge",
+   "name_th": "สะพานคนเดินทุ่งเลี้ยงสัตว์",
+   "position": [
+    -110,
+    5,
+    403
+   ],
+   "span": 8,
+   "width": 2.5,
+   "rotation_y_deg": 75
+  },
+  {
+   "id": "B7",
+   "name": "East Meadow Bridge",
+   "name_th": "สะพานทุ่งหญ้าตะวันออก",
+   "position": [
+    308,
+    3,
+    340
+   ],
+   "span": 12,
+   "width": 4,
+   "rotation_y_deg": 0
+  },
+  {
+   "id": "B8",
+   "name": "Creek Log Bridge",
+   "name_th": "สะพานซุงข้ามลำธาร",
+   "position": [
+    -174,
+    46,
+    -380
+   ],
+   "span": 8,
+   "width": 2,
+   "rotation_y_deg": 0
+  }
+ ],
+ "roads": [
+  {
+   "id": "R1",
+   "name": "Market Street",
+   "name_th": "ถนนตลาด",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     -88,
+     12
+    ],
+    [
+     -20,
+     12
+    ]
+   ]
+  },
+  {
+   "id": "R1b",
+   "name": "Market Street E",
+   "name_th": "ถนนตลาด",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     20,
+     12
+    ],
+    [
+     88,
+     12
+    ]
+   ]
+  },
+  {
+   "id": "R2",
+   "name": "Hall Street",
+   "name_th": "ถนนศาลากลาง",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     0,
+     27
+    ],
+    [
+     0,
+     43
+    ]
+   ]
+  },
+  {
+   "id": "R2b",
+   "name": "Hall Street S",
+   "name_th": "ถนนศาลากลาง",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     0,
+     73
+    ],
+    [
+     0,
+     104
+    ]
+   ]
+  },
+  {
+   "id": "R2c",
+   "name": "Hall Street N",
+   "name_th": "ถนนศาลากลาง",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     0,
+     -33
+    ],
+    [
+     0,
+     -80
+    ]
+   ]
+  },
+  {
+   "id": "R3",
+   "name": "Garden Walk",
+   "name_th": "ทางเดินสวน",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     -70,
+     68
+    ],
+    [
+     -22,
+     26
+    ]
+   ]
+  },
+  {
+   "id": "R4",
+   "name": "Elm Lane",
+   "name_th": "ถนน Elm Lane",
+   "class": "Village street",
+   "width": 5,
+   "points_xz": [
+    [
+     -105,
+     -125
+    ],
+    [
+     105,
+     -125
+    ]
+   ]
+  },
+  {
+   "id": "R5",
+   "name": "West Road",
+   "name_th": "ถนนสายตะวันตก",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     -88,
+     12
+    ],
+    [
+     -170,
+     0
+    ],
+    [
+     -226,
+     -15
+    ],
+    [
+     -300,
+     -20
+    ]
+   ]
+  },
+  {
+   "id": "R6",
+   "name": "Farm Road",
+   "name_th": "ถนนไปฟาร์ม",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     -70,
+     68
+    ],
+    [
+     -110,
+     125
+    ],
+    [
+     -140,
+     175
+    ],
+    [
+     -158,
+     176
+    ]
+   ]
+  },
+  {
+   "id": "R7",
+   "name": "North Road",
+   "name_th": "ถนนสายเหนือ",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     0,
+     -80
+    ],
+    [
+     -0.1,
+     -81.1
+    ],
+    [
+     -0.2,
+     -83.3
+    ],
+    [
+     -0.5,
+     -86.6
+    ],
+    [
+     -0.8,
+     -90.9
+    ],
+    [
+     -1.2,
+     -96.4
+    ],
+    [
+     -1.6,
+     -103.0
+    ],
+    [
+     -2.2,
+     -110.6
+    ],
+    [
+     -2.8,
+     -119.4
+    ],
+    [
+     -3.4,
+     -128.6
+    ],
+    [
+     -4.1,
+     -138.3
+    ],
+    [
+     -4.7,
+     -148.4
+    ],
+    [
+     -5.3,
+     -159.1
+    ],
+    [
+     -5.9,
+     -170.2
+    ],
+    [
+     -6.6,
+     -181.7
+    ],
+    [
+     -7.2,
+     -193.8
+    ],
+    [
+     -7.8,
+     -206.2
+    ],
+    [
+     -8.4,
+     -217.2
+    ],
+    [
+     -8.8,
+     -226.6
+    ],
+    [
+     -9.2,
+     -234.4
+    ],
+    [
+     -9.5,
+     -240.6
+    ],
+    [
+     -9.8,
+     -245.3
+    ],
+    [
+     -9.9,
+     -248.4
+    ],
+    [
+     -10,
+     -250
+    ],
+    [
+     -11.1,
+     -250.3
+    ],
+    [
+     -13.3,
+     -250.8
+    ],
+    [
+     -16.6,
+     -251.7
+    ],
+    [
+     -20.9,
+     -252.8
+    ],
+    [
+     -26.4,
+     -254.2
+    ],
+    [
+     -33.0,
+     -255.9
+    ],
+    [
+     -40.6,
+     -257.9
+    ],
+    [
+     -49.4,
+     -260.1
+    ],
+    [
+     -55.2,
+     -262.5
+    ],
+    [
+     -58.0,
+     -264.9
+    ],
+    [
+     -57.8,
+     -267.4
+    ],
+    [
+     -54.7,
+     -270.1
+    ],
+    [
+     -48.6,
+     -272.8
+    ],
+    [
+     -39.5,
+     -275.6
+    ],
+    [
+     -27.5,
+     -278.5
+    ],
+    [
+     -12.5,
+     -281.5
+    ],
+    [
+     -1.4,
+     -284.6
+    ],
+    [
+     5.8,
+     -287.8
+    ],
+    [
+     9.1,
+     -291.1
+    ],
+    [
+     8.4,
+     -294.4
+    ],
+    [
+     3.9,
+     -297.9
+    ],
+    [
+     -4.5,
+     -301.5
+    ],
+    [
+     -16.9,
+     -305.1
+    ],
+    [
+     -33.1,
+     -308.9
+    ],
+    [
+     -45.5,
+     -312.6
+    ],
+    [
+     -53.9,
+     -316.3
+    ],
+    [
+     -58.4,
+     -319.9
+    ],
+    [
+     -59.1,
+     -323.6
+    ],
+    [
+     -55.8,
+     -327.2
+    ],
+    [
+     -48.6,
+     -330.7
+    ],
+    [
+     -37.5,
+     -334.2
+    ],
+    [
+     -22.5,
+     -337.8
+    ],
+    [
+     -9.4,
+     -340.8
+    ],
+    [
+     1.9,
+     -343.4
+    ],
+    [
+     11.2,
+     -345.6
+    ],
+    [
+     18.8,
+     -347.4
+    ],
+    [
+     24.4,
+     -348.7
+    ],
+    [
+     28.1,
+     -349.6
+    ],
+    [
+     30,
+     -350
+    ],
+    [
+     28.3,
+     -350.7
+    ],
+    [
+     24.8,
+     -352.1
+    ],
+    [
+     19.7,
+     -354.2
+    ],
+    [
+     12.8,
+     -357.0
+    ],
+    [
+     4.2,
+     -360.5
+    ],
+    [
+     -6.1,
+     -364.8
+    ],
+    [
+     -18.1,
+     -369.7
+    ],
+    [
+     -31.9,
+     -375.3
+    ],
+    [
+     -43.9,
+     -380.2
+    ],
+    [
+     -54.2,
+     -384.5
+    ],
+    [
+     -62.8,
+     -388.0
+    ],
+    [
+     -69.7,
+     -390.8
+    ],
+    [
+     -74.8,
+     -392.9
+    ],
+    [
+     -78.3,
+     -394.3
+    ],
+    [
+     -80,
+     -395
+    ]
+   ]
+  },
+  {
+   "id": "R8",
+   "name": "Mill Road",
+   "name_th": "ถนนโรงสี",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     62,
+     -53
+    ],
+    [
+     140,
+     -100
+    ],
+    [
+     206,
+     -120
+    ],
+    [
+     238,
+     -125
+    ]
+   ]
+  },
+  {
+   "id": "R9",
+   "name": "East Road",
+   "name_th": "ถนนสายตะวันออก",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     88,
+     12
+    ],
+    [
+     170,
+     45
+    ],
+    [
+     250,
+     88
+    ]
+   ]
+  },
+  {
+   "id": "R10",
+   "name": "South Road",
+   "name_th": "ถนนสายใต้",
+   "class": "Main road",
+   "width": 6,
+   "points_xz": [
+    [
+     0,
+     104
+    ],
+    [
+     10,
+     200
+    ],
+    [
+     30,
+     300
+    ],
+    [
+     37,
+     437
+    ],
+    [
+     40,
+     460
+    ]
+   ]
+  },
+  {
+   "id": "R11",
+   "name": "Farm South Track",
+   "name_th": "ทางฟาร์มด้านใต้",
+   "class": "Lane",
+   "width": 4,
+   "points_xz": [
+    [
+     -140,
+     175
+    ],
+    [
+     -128,
+     210
+    ],
+    [
+     -128,
+     280
+    ],
+    [
+     -120,
+     305
+    ]
+   ]
+  },
+  {
+   "id": "R12",
+   "name": "Meadow Lane",
+   "name_th": "ทางทุ่งหญ้า",
+   "class": "Lane",
+   "width": 4,
+   "points_xz": [
+    [
+     -120,
+     305
+    ],
+    [
+     -60,
+     335
+    ],
+    [
+     30,
+     300
+    ],
+    [
+     120,
+     325
+    ],
+    [
+     220,
+     320
+    ],
+    [
+     308,
+     340
+    ],
+    [
+     350,
+     330
+    ]
+   ]
+  },
+  {
+   "id": "P2",
+   "name": "Forest Path North",
+   "name_th": "ทางเดินป่าเหนือ",
+   "class": "Footpath",
+   "width": 2,
+   "points_xz": [
+    [
+     -300,
+     -20
+    ],
+    [
+     -350,
+     -90
+    ],
+    [
+     -400,
+     -160
+    ]
+   ]
+  },
+  {
+   "id": "P3",
+   "name": "Forest Path South",
+   "name_th": "ทางเดินป่าใต้",
+   "class": "Footpath",
+   "width": 2,
+   "points_xz": [
+    [
+     -300,
+     -20
+    ],
+    [
+     -340,
+     50
+    ],
+    [
+     -380,
+     120
+    ],
+    [
+     -330,
+     250
+    ]
+   ]
+  },
+  {
+   "id": "P4",
+   "name": "Pasture Path",
+   "name_th": "ทางเดินทุ่งเลี้ยงสัตว์",
+   "class": "Footpath",
+   "width": 2,
+   "points_xz": [
+    [
+     -100,
+     328
+    ],
+    [
+     -110,
+     403
+    ],
+    [
+     -120,
+     470
+    ]
+   ]
+  },
+  {
+   "id": "P5",
+   "name": "Riverside Path",
+   "name_th": "ทางเดินริมแม่น้ำ",
+   "class": "Footpath",
+   "width": 2,
+   "points_xz": [
+    [
+     140,
+     -100
+    ],
+    [
+     188,
+     -75
+    ],
+    [
+     196,
+     -60
+    ]
+   ]
+  },
+  {
+   "id": "T1",
+   "name": "Highfall Trail",
+   "name_th": "เส้นทาง Highfall",
+   "class": "Mountain trail",
+   "width": 1.5,
+   "points_xz": [
+    [
+     238,
+     -125
+    ],
+    [
+     262,
+     -200
+    ],
+    [
+     292,
+     -290
+    ],
+    [
+     306,
+     -345
+    ]
+   ]
+  },
+  {
+   "id": "T2",
+   "name": "Summit Trail",
+   "name_th": "เส้นทางยอดเขา",
+   "class": "Mountain trail",
+   "width": 1.5,
+   "points_xz": [
+    [
+     30,
+     -350
+    ],
+    [
+     30.8,
+     -350.4
+    ],
+    [
+     32.3,
+     -351.2
+    ],
+    [
+     34.7,
+     -352.3
+    ],
+    [
+     37.8,
+     -353.9
+    ],
+    [
+     41.7,
+     -355.9
+    ],
+    [
+     46.4,
+     -358.2
+    ],
+    [
+     51.9,
+     -360.9
+    ],
+    [
+     58.1,
+     -364.1
+    ],
+    [
+     62.3,
+     -367.1
+    ],
+    [
+     64.5,
+     -370.1
+    ],
+    [
+     64.7,
+     -373.0
+    ],
+    [
+     62.8,
+     -375.8
+    ],
+    [
+     58.9,
+     -378.5
+    ],
+    [
+     53.0,
+     -381.2
+    ],
+    [
+     45.0,
+     -383.8
+    ],
+    [
+     35.0,
+     -386.2
+    ],
+    [
+     27.5,
+     -388.8
+    ],
+    [
+     22.5,
+     -391.2
+    ],
+    [
+     20.0,
+     -393.8
+    ],
+    [
+     20.0,
+     -396.2
+    ],
+    [
+     22.5,
+     -398.8
+    ],
+    [
+     27.5,
+     -401.2
+    ],
+    [
+     35.0,
+     -403.8
+    ],
+    [
+     45.0,
+     -406.2
+    ],
+    [
+     52.6,
+     -408.8
+    ],
+    [
+     57.7,
+     -411.2
+    ],
+    [
+     60.5,
+     -413.8
+    ],
+    [
+     60.8,
+     -416.2
+    ],
+    [
+     58.7,
+     -418.8
+    ],
+    [
+     54.1,
+     -421.2
+    ],
+    [
+     47.2,
+     -423.8
+    ],
+    [
+     37.8,
+     -426.2
+    ],
+    [
+     30.5,
+     -428.7
+    ],
+    [
+     25.2,
+     -431.0
+    ],
+    [
+     21.9,
+     -433.3
+    ],
+    [
+     20.6,
+     -435.5
+    ],
+    [
+     21.4,
+     -437.6
+    ],
+    [
+     24.2,
+     -439.6
+    ],
+    [
+     29.1,
+     -441.6
+    ],
+    [
+     35.9,
+     -443.4
+    ],
+    [
+     42.0,
+     -445.1
+    ],
+    [
+     47.1,
+     -446.5
+    ],
+    [
+     51.4,
+     -447.7
+    ],
+    [
+     54.8,
+     -448.6
+    ],
+    [
+     57.4,
+     -449.3
+    ],
+    [
+     59.1,
+     -449.8
+    ],
+    [
+     60,
+     -450
+    ]
+   ]
+  },
+  {
+   "id": "T3",
+   "name": "Ridge Trail",
+   "name_th": "เส้นทางสันเขา",
+   "class": "Mountain trail",
+   "width": 1.5,
+   "points_xz": [
+    [
+     -80,
+     -395
+    ],
+    [
+     -120,
+     -350
+    ],
+    [
+     -174,
+     -380
+    ],
+    [
+     -260,
+     -400
+    ],
+    [
+     -360,
+     -425
+    ]
+   ]
+  },
+  {
+   "id": "T4",
+   "name": "Cave Trail",
+   "name_th": "เส้นทางถ้ำ",
+   "class": "Mountain trail",
+   "width": 1.5,
+   "points_xz": [
+    [
+     306,
+     -345
+    ],
+    [
+     340,
+     -380
+    ],
+    [
+     390,
+     -390
+    ]
+   ]
+  }
+ ],
+ "ring_road": {
+  "center_xz": [
+   0,
+   12
+  ],
+  "radii": [
+   88,
+   92
+  ],
+  "width": 5
+ },
+ "lake_loop": {
+  "center_xz": [
+   360,
+   80
+  ],
+  "radii": [
+   126,
+   136
+  ],
+  "width": 2
+ },
+ "water": {
+  "river_xz": [
+   [
+    310,
+    -485
+   ],
+   [
+    300,
+    -420
+   ],
+   [
+    290,
+    -360
+   ],
+   [
+    265,
+    -300
+   ],
+   [
+    240,
+    -240
+   ],
+   [
+    215,
+    -170
+   ],
+   [
+    206,
+    -120
+   ],
+   [
+    203,
+    -62
+   ],
+   [
+    230,
+    -25
+   ],
+   [
+    280,
+    -8
+   ]
+  ],
+  "outflow_xz": [
+   [
+    330,
+    198
+   ],
+   [
+    305,
+    280
+   ],
+   [
+    310,
+    360
+   ],
+   [
+    325,
+    440
+   ],
+   [
+    345,
+    500
+   ]
+  ],
+  "creek_xz": [
+   [
+    -180,
+    -465
+   ],
+   [
+    -176,
+    -400
+   ],
+   [
+    -170,
+    -330
+   ],
+   [
+    -200,
+    -200
+   ],
+   [
+    -215,
+    -60
+   ],
+   [
+    -240,
+    40
+   ],
+   [
+    -262,
+    120
+   ],
+   [
+    -266,
+    200
+   ],
+   [
+    -252,
+    290
+   ],
+   [
+    -200,
+    360
+   ],
+   [
+    -120,
+    400
+   ],
+   [
+    -20,
+    428
+   ],
+   [
+    60,
+    440
+   ],
+   [
+    200,
+    452
+   ],
+   [
+    325,
+    440
+   ]
+  ],
+  "lake": {
+   "center": [
+    360,
+    0,
+    80
+   ],
+   "radii": [
+    110,
+    120
+   ],
+   "bed_y": -8
+  },
+  "island": {
+   "center_xz": [
+    380,
+    110
+   ],
+   "radius": 18
+  },
+  "river_profile": [
+   [
+    310,
+    -485,
+    110
+   ],
+   [
+    300,
+    -420,
+    92
+   ],
+   [
+    290,
+    -361,
+    72
+   ],
+   [
+    289,
+    -357,
+    54
+   ],
+   [
+    265,
+    -300,
+    42
+   ],
+   [
+    240,
+    -240,
+    30
+   ],
+   [
+    215,
+    -170,
+    22
+   ],
+   [
+    206,
+    -120,
+    16
+   ],
+   [
+    203,
+    -62,
+    6
+   ],
+   [
+    230,
+    -25,
+    3
+   ],
+   [
+    280,
+    -8,
+    0
+   ]
+  ],
+  "creek_profile": [
+   [
+    -180,
+    -465,
+    80
+   ],
+   [
+    -176,
+    -400,
+    60
+   ],
+   [
+    -170,
+    -331,
+    40
+   ],
+   [
+    -170,
+    -327,
+    32
+   ],
+   [
+    -200,
+    -200,
+    20
+   ],
+   [
+    -215,
+    -60,
+    10
+   ],
+   [
+    -240,
+    40,
+    7
+   ],
+   [
+    -262,
+    120,
+    6
+   ],
+   [
+    -266,
+    200,
+    5
+   ],
+   [
+    -252,
+    290,
+    4
+   ],
+   [
+    -200,
+    360,
+    3.5
+   ],
+   [
+    -120,
+    400,
+    3
+   ],
+   [
+    -20,
+    428,
+    2
+   ],
+   [
+    60,
+    440,
+    1.5
+   ],
+   [
+    200,
+    452,
+    -1
+   ],
+   [
+    325,
+    440,
+    -4
+   ]
+  ],
+  "outflow_profile": [
+   [
+    330,
+    198,
+    0
+   ],
+   [
+    305,
+    278,
+    0
+   ],
+   [
+    305,
+    284,
+    -3
+   ],
+   [
+    310,
+    360,
+    -3.5
+   ],
+   [
+    325,
+    440,
+    -4
+   ],
+   [
+    345,
+    500,
+    -6
+   ]
+  ],
+  "widths": {
+   "river_upper": 6,
+   "river_lower": 11,
+   "creek": 5,
+   "outflow": 8
+  }
+ },
+ "zones": [
+  {
+   "id": "Z1A",
+   "type": "build",
+   "rect_xz": [
+    -241,
+    224,
+    32,
+    32
+   ]
+  },
+  {
+   "id": "Z1B",
+   "type": "build",
+   "rect_xz": [
+    -241,
+    272,
+    32,
+    32
+   ]
+  },
+  {
+   "id": "Z1C",
+   "type": "build",
+   "rect_xz": [
+    -116,
+    224,
+    32,
+    32
+   ]
+  },
+  {
+   "id": "Z2",
+   "name": "Farm interior",
+   "name_th": "พื้นที่ภายในฟาร์ม",
+   "type": "build",
+   "rect_xz": [
+    -245,
+    92,
+    157,
+    220
+   ]
+  },
+  {
+   "id": "X1",
+   "name": "Meadow Building Plots",
+   "name_th": "แปลงก่อสร้างในทุ่งหญ้า",
+   "type": "reserve",
+   "rect_xz": [
+    160,
+    335,
+    100,
+    60
+   ]
+  },
+  {
+   "id": "X2",
+   "name": "Meadow Farmland",
+   "name_th": "พื้นที่ทำนาในทุ่งหญ้า",
+   "type": "reserve",
+   "rect_xz": [
+    -40,
+    365,
+    120,
+    50
+   ]
+  },
+  {
+   "id": "X3",
+   "name": "Residential Expansion",
+   "name_th": "ขยายย่านที่พักอาศัย",
+   "type": "reserve",
+   "rect_xz": [
+    115,
+    -150,
+    60,
+    50
+   ]
+  },
+  {
+   "id": "X4",
+   "name": "Village Infill West",
+   "name_th": "พื้นที่เติมหมู่บ้านฝั่งตะวันตก",
+   "type": "reserve",
+   "rect_xz": [
+    -150,
+    -110,
+    40,
+    40
+   ]
+  },
+  {
+   "id": "X5",
+   "name": "Lakeshore Lots",
+   "name_th": "แปลงริมทะเลสาบ",
+   "type": "reserve",
+   "rect_xz": [
+    380,
+    215,
+    80,
+    45
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "id": "village",
+   "name": "Haven Village",
+   "name_th": "หมู่บ้าน Haven",
+   "priority": 5,
+   "shape": "ellipse",
+   "center_xz": [
+    0,
+    0
+   ],
+   "radii": [
+    150,
+    170
+   ],
+   "announce": true
+  },
+  {
+   "id": "farm",
+   "name": "Farm Valley",
+   "name_th": "ฟาร์ม",
+   "priority": 5,
+   "shape": "rect",
+   "rect_xz": [
+    -268,
+    85,
+    180,
+    235
+   ],
+   "announce": true
+  },
+  {
+   "id": "lake",
+   "name": "Mirror Lake",
+   "name_th": "ทะเลสาบ Mirror",
+   "priority": 4,
+   "shape": "ellipse",
+   "center_xz": [
+    360,
+    80
+   ],
+   "radii": [
+    140,
+    150
+   ],
+   "announce": true
+  },
+  {
+   "id": "river",
+   "name": "Haven River",
+   "name_th": "แม่น้ำ Haven",
+   "priority": 3,
+   "shape": "rect",
+   "rect_xz": [
+    170,
+    -265,
+    110,
+    265
+   ],
+   "announce": true
+  },
+  {
+   "id": "mountain",
+   "name": "Ridge Mountains",
+   "name_th": "เทือกเขา Ridge",
+   "priority": 2,
+   "shape": "rect",
+   "rect_xz": [
+    -500,
+    -500,
+    1000,
+    235
+   ],
+   "announce": true
+  },
+  {
+   "id": "forest",
+   "name": "Westwood Forest",
+   "name_th": "ป่า Westwood",
+   "priority": 2,
+   "shape": "rect",
+   "rect_xz": [
+    -500,
+    -265,
+    232,
+    650
+   ],
+   "announce": true
+  },
+  {
+   "id": "meadow",
+   "name": "Meadowlands",
+   "name_th": "ทุ่งหญ้า Meadowlands",
+   "priority": 1,
+   "shape": "rect",
+   "rect_xz": [
+    -500,
+    300,
+    1000,
+    200
+   ],
+   "announce": true
+  },
+  {
+   "id": "valley",
+   "name": "Haven Valley",
+   "name_th": "หุบเขา Haven",
+   "priority": 0,
+   "shape": "rect",
+   "rect_xz": [
+    -500,
+    -500,
+    1000,
+    1000
+   ],
+   "announce": false
+  }
+ ]
+}

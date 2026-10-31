@@ -1,0 +1,10 @@
+# Godot 4 cache and build output
+.godot/
+/android/
+/build/
+*.tmp
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+tools/terrain/out/
