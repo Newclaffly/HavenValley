@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/world/water_builder.gd" id="12_water"]
 [ext_resource type="Shader" path="res://shaders/water.gdshader" id="13_water_shader"]
 [ext_resource type="Shader" path="res://shaders/terrain3d_haven.gdshader" id="14_t3d_shader"]
+[ext_resource type="Script" path="res://scripts/world/nature_scatter.gd" id="15_nature"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
 sky_top_color = Color(0.36, 0.6, 0.86, 1)
@@ -62,6 +63,13 @@ water_shader = ExtResource("13_water_shader")
 script = ExtResource("2_greybox")
 layout_json = ExtResource("3_layout")
 terrain = NodePath("../Terrain")
+
+[node name="Nature" type="Node3D" parent="." node_paths=PackedStringArray("terrain")]
+script = ExtResource("15_nature")
+layout_json = ExtResource("3_layout")
+terrain = NodePath("../Terrain")
+control_map = ExtResource("9_control")
+zone_map = ExtResource("10_zones")
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
 

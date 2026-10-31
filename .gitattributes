@@ -6,3 +6,5 @@
 *.exr binary
 *.wav binary
 *.ogg binary
+*.blend binary
+*.res binary

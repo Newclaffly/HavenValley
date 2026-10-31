@@ -8,17 +8,26 @@ extends Node3D
 ## the blueprint. In the editor the same build runs as a preview (not saved into the scene); use the
 ## "Rebuild Preview" button in the Inspector after editing the JSON or regenerating the terrain.
 ##
-## Heights come from the terrain. Buildings are sized as Phase 2 blockouts; Blender models replace
-## them building by building (W5) without changing positions.
+## Heights come from the terrain. Where a Blender model exists in building_dir (Phase 2C,
+## tools/blender/haven_blockouts.py) it replaces the grey box at the same position: the model's
+## origin is the footprint centre at floor level, its front faces +Z and is turned to the landmark's
+## "faces" direction, and its 2 m stone plinth covers the slope under it.
 
 @export var layout_json: JSON
 ## The terrain to stand on. Must be earlier in the scene tree so it is built first.
 @export var terrain: TerrainSystem
 @export var show_labels: bool = true
 @export var build_signs: bool = true
+## Use the Blender blockout models where they exist (grey boxes otherwise).
+@export var use_models: bool = true
+@export_dir var building_dir: String = "res://assets/buildings/blockout"
 @export_tool_button("Rebuild Preview", "Reload") var rebuild_button := rebuild
 
 const WORLD_LAYER := 1  # Physics layer 1 "world".
+## Depth of the stone plinth under every Blender building (must match haven_blockouts.py PLINTH_DEPTH).
+const PLINTH_DEPTH := 2.0
+const HOUSE_MODELS := ["house_a", "house_b", "house_c"]
+const STALL_MODELS := ["stall_a", "stall_b", "stall_c"]
 
 # Building box heights in metres (blockout sizes until Blender models replace them).
 const BUILDING_HEIGHTS := {
@@ -48,6 +57,8 @@ const REGION_NAMES := {
 
 var _materials: Dictionary = {}
 var _layout: WorldLayout
+## Node name -> model scene path for every building placed from a Blender model (read by tests).
+var placed_models: Dictionary = {}
 
 
 func _ready() -> void:
@@ -60,6 +71,7 @@ func rebuild() -> void:
 		remove_child(child)
 		child.queue_free()
 	_materials.clear()
+	placed_models.clear()
 	_layout = WorldLayout.from_json(layout_json)
 	if not _layout.is_valid():
 		push_warning("GreyboxBuilder: assign res://resources/world/world_layout.json to Layout Json.")
@@ -108,16 +120,58 @@ func _building_landmark(root: Node3D, landmark: Dictionary, footprint: Array) ->
 	var color: Color = CATEGORY_COLORS.get(landmark.get("category", ""), Color.GRAY)
 	if landmark.get("category", "") == "water":
 		color = WOOD_COLOR  # buildings by the water (mill, fisher's cottage) are timber
+	var model := _place_model(root, id, id, centre.x, centre.z, size, landmark.get("faces", ""))
+	if model:
+		height = maxf(height, 4.0)
+		_label(root, landmark.get("name", id), Vector3(centre.x, model.position.y + height + (24.0 if id == "town_hall" else 1.5), centre.z), 64)
+		_building_sign(root, landmark, centre, size)
+		return
 	var body := _box_on_ground(root, id, centre.x, centre.z, size, height, color)
 	var base_y := body.position.y
 	if id == "town_hall":
 		# 22 m clock tower over the hall, top 34 m above the plateau: the main navigation landmark.
 		_solid_box(body, "ClockTower", Vector3(0, 0, -size.y * 0.25), Vector3(6, 34, 6), color.darkened(0.15))
 	_label(root, landmark.get("name", id), Vector3(centre.x, base_y + height + (24.0 if id == "town_hall" else 1.5), centre.z), 64)
+	_building_sign(root, landmark, centre, size)
+
+
+func _building_sign(root: Node3D, landmark: Dictionary, centre: Vector3, size: Vector2) -> void:
 	if build_signs:
 		var front := _facing_vector(landmark.get("faces", ""))
 		var offset := Vector3(front.x * (size.x * 0.5 + 2.0), 0, front.z * (size.y * 0.5 + 2.0))
 		_sign(root, landmark, Vector3(centre.x, 0, centre.z) + offset)
+
+
+## Instance the Blender model for a building if it exists. size is the world footprint (X, Z).
+## The model's floor sits on the highest ground under the footprint; its plinth reaches 2 m below.
+func _place_model(parent: Node3D, node_name: String, model_name: String, x: float, z: float, size: Vector2, faces: String) -> Node3D:
+	if not use_models:
+		return null
+	var path := building_dir.path_join(model_name + ".glb")
+	if not ResourceLoader.exists(path):
+		return null
+	var highest := -INF
+	for corner: Vector2 in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1), Vector2.ZERO]:
+		highest = maxf(highest, _height(x + corner.x * size.x * 0.5, z + corner.y * size.y * 0.5))
+	var model := (load(path) as PackedScene).instantiate() as Node3D
+	model.name = node_name
+	model.position = Vector3(x, highest, z)
+	model.rotation.y = facing_yaw(faces)
+	parent.add_child(model)
+	placed_models[node_name] = path
+	return model
+
+
+## Yaw that turns a model whose front faces +Z (south) to the given compass facing.
+static func facing_yaw(faces: String) -> float:
+	match faces.substr(0, 1):
+		"N":
+			return PI
+		"E":
+			return PI * 0.5
+		"W":
+			return -PI * 0.5
+	return 0.0
 
 
 func _area_landmark(root: Node3D, landmark: Dictionary, footprint: Array) -> void:
@@ -159,14 +213,27 @@ func _point_marker(root: Node3D, landmark: Dictionary, with_post: bool) -> void:
 
 func _build_village_details() -> void:
 	var root := _group("VillageDetails")
-	for house: Dictionary in _layout.data.get("village_houses", []):
+	var houses: Array = _layout.data.get("village_houses", [])
+	for i in houses.size():
+		var house: Dictionary = houses[i]
 		var p := WorldLayout.to_vec3(house["position"])
 		var size: Array = house.get("footprint", [8, 8])
-		_box_on_ground(root, house.get("id", "House"), p.x, p.z, Vector2(size[0], size[1]), 6.0, CATEGORY_COLORS["home"])
-	for stall: Dictionary in _layout.data.get("market_stalls", []):
+		var node_name: String = house.get("id", "House").replace(".", "_")
+		if _place_model(root, node_name, HOUSE_MODELS[i % HOUSE_MODELS.size()], p.x, p.z, Vector2(size[0], size[1]), house.get("faces", "S")):
+			continue
+		_box_on_ground(root, node_name, p.x, p.z, Vector2(size[0], size[1]), 6.0, CATEGORY_COLORS["home"])
+	var stalls: Array = _layout.data.get("market_stalls", [])
+	for i in stalls.size():
+		var stall: Dictionary = stalls[i]
 		var p := WorldLayout.to_vec3(stall["position"])
 		var size: Array = stall.get("footprint", [4, 3])
-		_box_on_ground(root, stall.get("id", "Stall"), p.x, p.z, Vector2(size[0], size[1]), 2.5, Color("d9a55a"))
+		var node_name: String = stall.get("id", "Stall")
+		# Stalls face the aisle down the middle of the marketplace.
+		var faces := "E" if p.x < 0.0 else "W"
+		var world_size := Vector2(size[1], size[0])  # a 4 m wide front turned east/west spans 4 m along Z
+		if _place_model(root, node_name, STALL_MODELS[i % STALL_MODELS.size()], p.x, p.z, world_size, faces):
+			continue
+		_box_on_ground(root, node_name, p.x, p.z, Vector2(size[0], size[1]), 2.5, Color("d9a55a"))
 
 
 # --- Bridges and docks ------------------------------------------------------------------------------

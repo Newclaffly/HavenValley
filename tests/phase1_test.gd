@@ -103,7 +103,8 @@ func _run() -> void:
 	player.teleport(world.ground_at(0, -13.5) + Vector3.UP * 0.05, Vector3(0, 10, 20))
 	await _physics_frames(10)
 	var camera := (player.get_node("CameraRig") as PlayerCameraRig).get_camera()
-	_check("camera is pushed out of the Town Hall wall", camera.global_position.z > -15.0, str(camera.global_position))
+	# The hall's front wall is at z = -18 (3 m behind the footprint edge, behind the portico columns).
+	_check("camera is pushed out of the Town Hall wall", camera.global_position.z > -18.0, str(camera.global_position))
 	_check("camera is the active camera", camera.is_current())
 
 	# Pause

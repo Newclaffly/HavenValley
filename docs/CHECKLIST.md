@@ -42,9 +42,11 @@
 - ✅ ทดสอบผ่านทั้งสองระบบ (Phase 2 19/19, Phase 1 27/27)
 - ✅ เชื่อม GitHub `Newclaffly/HavenValley` (commit แยกตามเฟส)
 
-2C แอสเซ็ตชุดแรก ⬜
-- ⬜ Blockout อาคารจาก Blender (W5)
-- ⬜ ต้นไม้และหินชุดแรก
+2C แอสเซ็ตชุดแรก ✅
+- ✅ สคริปต์ Blender `tools/blender/haven_blockouts.py` สร้างโมเดล 32 ชิ้นจากแบบแปลน (ทดสอบกับ Blender 5.2.3)
+- ✅ Blockout อาคาร 15 หลัง + บ้าน 3 แบบ + แผงตลาด 3 แบบ พร้อม collision (W5)
+- ✅ ต้นไม้ พุ่มไม้ หิน 11 แบบ + `NatureScatter` (MultiMesh แยก chunk, collision ลำต้น/หิน)
+- ✅ ทดสอบ `tests/phase2c_test.tscn` 20/20 ทั้งสองระบบภูมิประเทศ, Phase 2 19/19, Phase 1 27/27
 
 ## Phase 3 — ระบบเกมพื้นฐาน ⬜
 - ⬜ ไอเท็ม / Inventory / Hotbar

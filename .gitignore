@@ -8,3 +8,6 @@
 Thumbs.db
 desktop.ini
 tools/terrain/out/
+__pycache__/
+*.pyc
+*.blend1

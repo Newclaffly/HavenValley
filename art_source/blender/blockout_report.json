@@ -1,0 +1,264 @@
+{
+ "buildings": {
+  "town_hall": {
+   "size": [
+    25.2,
+    18.6,
+    36.0
+   ],
+   "tris": 1926
+  },
+  "general_store": {
+   "size": [
+    15.2,
+    14.4,
+    11.2
+   ],
+   "tris": 488
+  },
+  "cafe": {
+   "size": [
+    11.2,
+    12.2,
+    10.4
+   ],
+   "tris": 404
+  },
+  "restaurant": {
+   "size": [
+    13.2,
+    16.1,
+    13.4
+   ],
+   "tris": 872
+  },
+  "blacksmith": {
+   "size": [
+    10.8,
+    13.85,
+    10.5
+   ],
+   "tris": 176
+  },
+  "carpenter": {
+   "size": [
+    16.3,
+    12.75,
+    10.3
+   ],
+   "tris": 464
+  },
+  "storage_delivery": {
+   "size": [
+    19.2,
+    27.0,
+    10.9
+   ],
+   "tris": 512
+  },
+  "farmhouse": {
+   "size": [
+    13.2,
+    16.9,
+    13.0
+   ],
+   "tris": 908
+  },
+  "well": {
+   "size": [
+    2.85,
+    2.4,
+    3.85
+   ],
+   "tris": 116
+  },
+  "barn": {
+   "size": [
+    17.2,
+    25.2,
+    11.5
+   ],
+   "tris": 196
+  },
+  "coop": {
+   "size": [
+    10.5,
+    8.65,
+    5.9
+   ],
+   "tris": 176
+  },
+  "storage_bld": {
+   "size": [
+    11.2,
+    13.95,
+    9.1
+   ],
+   "tris": 284
+  },
+  "greenhouse": {
+   "size": [
+    12.2,
+    18.2,
+    6.8
+   ],
+   "tris": 224
+  },
+  "old_mill": {
+   "size": [
+    10.5,
+    13.95,
+    12.1
+   ],
+   "tris": 316
+  },
+  "fisher_cottage": {
+   "size": [
+    11.2,
+    10.5,
+    9.8
+   ],
+   "tris": 404
+  },
+  "house_a": {
+   "size": [
+    9.2,
+    9.95,
+    10.4
+   ],
+   "tris": 332
+  },
+  "house_b": {
+   "size": [
+    9.2,
+    9.95,
+    11.8
+   ],
+   "tris": 560
+  },
+  "house_c": {
+   "size": [
+    9.2,
+    10.3,
+    10.4
+   ],
+   "tris": 272
+  },
+  "stall_a": {
+   "size": [
+    4.4,
+    3.4,
+    3.33
+   ],
+   "tris": 132
+  },
+  "stall_b": {
+   "size": [
+    4.4,
+    3.4,
+    3.33
+   ],
+   "tris": 132
+  },
+  "stall_c": {
+   "size": [
+    4.4,
+    3.4,
+    3.33
+   ],
+   "tris": 132
+  }
+ },
+ "nature": {
+  "tree_pine_a": {
+   "size": [
+    4.45,
+    4.56,
+    9.93
+   ],
+   "tris": 68
+  },
+  "tree_pine_b": {
+   "size": [
+    5.96,
+    6.08,
+    15.3
+   ],
+   "tris": 80
+  },
+  "tree_pine_c": {
+   "size": [
+    3.29,
+    3.24,
+    6.08
+   ],
+   "tris": 56
+  },
+  "tree_oak_a": {
+   "size": [
+    5.6,
+    5.48,
+    7.16
+   ],
+   "tris": 272
+  },
+  "tree_oak_b": {
+   "size": [
+    7.49,
+    6.46,
+    8.88
+   ],
+   "tris": 314
+  },
+  "tree_birch_a": {
+   "size": [
+    6.52,
+    6.56,
+    8.24
+   ],
+   "tris": 230
+  },
+  "bush_a": {
+   "size": [
+    2.34,
+    2.5,
+    1.29
+   ],
+   "tris": 168
+  },
+  "bush_b": {
+   "size": [
+    3.33,
+    3.61,
+    1.84
+   ],
+   "tris": 210
+  },
+  "rock_a": {
+   "size": [
+    1.59,
+    1.24,
+    0.98
+   ],
+   "tris": 42
+  },
+  "rock_b": {
+   "size": [
+    2.64,
+    1.65,
+    1.64
+   ],
+   "tris": 42
+  },
+  "rock_c": {
+   "size": [
+    3.45,
+    4.02,
+    2.87
+   ],
+   "tris": 42
+  }
+ },
+ "blend": "C:\\Users\\newcl\\Documents\\HavenValley\\art_source\\blender\\haven_blockouts.blend",
+ "blender": "5.2.3 LTS"
+}
