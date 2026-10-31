@@ -13,7 +13,7 @@ extends Node3D
 
 @export var layout_json: JSON
 ## The terrain to stand on. Must be earlier in the scene tree so it is built first.
-@export var terrain: HeightmapTerrain
+@export var terrain: TerrainSystem
 @export var show_labels: bool = true
 @export var build_signs: bool = true
 @export_tool_button("Rebuild Preview", "Reload") var rebuild_button := rebuild

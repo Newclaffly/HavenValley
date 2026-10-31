@@ -31,11 +31,16 @@
 - ✅ แหล่งน้ำ + water shader + น้ำตก (W3)
 - ✅ ถนนตามความชัน + สะพาน 8 แห่ง + ท่าเรือ 2 แห่ง (W4)
 - ✅ ชื่อภูมิภาค, กันตกน้ำลึก
-- ✅ ทดสอบอัตโนมัติ `tests/phase2_test.tscn` 18/18 และ Phase 1 ยังผ่าน 27/27
+- ✅ ทดสอบอัตโนมัติ `tests/phase2_test.tscn` 18/18 และ Phase 1 ยังผ่าน 27/27 (ตอนจบ 2A)
 
-2B Terrain3D ⬜
-- ⬜ ผู้ใช้ติดตั้ง Terrain3D จาก AssetLib (ดู PHASE2.md ข้อ 3)
-- ⬜ นำ heightmap เข้า Terrain3D + เท็กซ์เจอร์ + ปั้น/ระบายใน editor
+2B Terrain3D ✅
+- ✅ ผู้ใช้ติดตั้ง Terrain3D 1.1.0 จาก AssetLib — ทดสอบซ้ำกับ Godot 4.7.2 ผ่าน
+- ✅ ข้อมูล Terrain3D 25 region จาก heightmap
+- ✅ Shader Terrain3D สไตล์ Haven Valley (หน้าตาเหมือนภูมิประเทศเดิม)
+- ✅ `TerrainSystem` เลือก Terrain3D / ภูมิประเทศสำรองอัตโนมัติ
+- ✅ ฉากปั้นพื้น `terrain_editor.tscn` + เครื่องมือ import / export
+- ✅ ทดสอบผ่านทั้งสองระบบ (Phase 2 19/19, Phase 1 27/27)
+- ✅ เชื่อม GitHub `Newclaffly/HavenValley` (commit แยกตามเฟส)
 
 2C แอสเซ็ตชุดแรก ⬜
 - ⬜ Blockout อาคารจาก Blender (W5)

@@ -6,13 +6,14 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="5_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="6_pause"]
-[ext_resource type="Script" path="res://scripts/world/heightmap_terrain.gd" id="7_terrain"]
+[ext_resource type="Script" path="res://scripts/world/terrain_system.gd" id="7_terrain"]
 [ext_resource type="Image" path="res://resources/world/terrain/heightmap.res" id="8_heightmap"]
 [ext_resource type="Texture2D" path="res://resources/world/terrain/control.png" id="9_control"]
 [ext_resource type="Texture2D" path="res://resources/world/terrain/zones.png" id="10_zones"]
 [ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="11_terrain_shader"]
 [ext_resource type="Script" path="res://scripts/world/water_builder.gd" id="12_water"]
 [ext_resource type="Shader" path="res://shaders/water.gdshader" id="13_water_shader"]
+[ext_resource type="Shader" path="res://shaders/terrain3d_haven.gdshader" id="14_t3d_shader"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
 sky_top_color = Color(0.36, 0.6, 0.86, 1)
@@ -46,10 +47,11 @@ directional_shadow_max_distance = 200.0
 
 [node name="Terrain" type="Node3D" parent="."]
 script = ExtResource("7_terrain")
-heightmap = ExtResource("8_heightmap")
+terrain3d_shader = ExtResource("14_t3d_shader")
 control_map = ExtResource("9_control")
 zone_map = ExtResource("10_zones")
-terrain_shader = ExtResource("11_terrain_shader")
+heightmap = ExtResource("8_heightmap")
+heightmap_shader = ExtResource("11_terrain_shader")
 
 [node name="Water" type="Node3D" parent="."]
 script = ExtResource("12_water")

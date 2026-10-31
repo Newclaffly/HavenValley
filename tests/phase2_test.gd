@@ -17,7 +17,7 @@ var _regions: Array[String] = []
 var _notifications: Array[String] = []
 var world: WorldManager
 var player: PlayerController
-var terrain: HeightmapTerrain
+var terrain: TerrainSystem
 
 
 func _ready() -> void:
@@ -37,7 +37,10 @@ func _run() -> void:
 	var layout := world.layout
 
 	# Terrain matches the blueprint
-	_check("terrain built (64 tiles + collision)", terrain.get_child_count() == 65, str(terrain.get_child_count()))
+	print("  terrain backend: ", terrain.get_backend_name())
+	_check("terrain built", terrain.backend != TerrainSystem.Backend.NONE and terrain.get_child_count() > 0, terrain.get_backend_name())
+	if OS.get_environment("HAVEN_EXPECT_BACKEND") != "":
+		_check("expected terrain backend", terrain.get_backend_name() == OS.get_environment("HAVEN_EXPECT_BACKEND"), terrain.get_backend_name())
 	var worst := 0.0
 	var worst_id := ""
 	for landmark: Dictionary in layout.get_landmarks():

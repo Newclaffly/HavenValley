@@ -21,11 +21,12 @@ var _last_safe_position: Vector3
 var _safe_timer: float = 0.0
 
 @onready var _player: PlayerController = $Player
-@onready var _terrain: HeightmapTerrain = $Terrain
+@onready var _terrain: TerrainSystem = $Terrain
 
 
 func _ready() -> void:
 	layout = WorldLayout.load_default()
+	_terrain.set_focus_target(_player)
 	_spawn_player()
 	GameManager.enter_gameplay()
 
@@ -51,7 +52,7 @@ func get_player() -> PlayerController:
 	return _player
 
 
-func get_terrain() -> HeightmapTerrain:
+func get_terrain() -> TerrainSystem:
 	return _terrain
 
 

@@ -272,8 +272,8 @@ ROAD_CLASS = {
     "Village street": dict(grade=0.03, shoulder=1.0, falloff=4.0, smooth=20.0),
     "Main road": dict(grade=0.08, shoulder=1.5, falloff=8.0, smooth=50.0),
     "Lane": dict(grade=0.10, shoulder=0.5, falloff=6.0, smooth=40.0),
-    "Footpath": dict(grade=0.14, shoulder=0.3, falloff=4.0, smooth=24.0),
-    "Mountain trail": dict(grade=0.27, shoulder=0.2, falloff=3.0, smooth=16.0),
+    "Footpath": dict(grade=0.14, shoulder=1.0, falloff=5.0, smooth=24.0),
+    "Mountain trail": dict(grade=0.27, shoulder=1.2, falloff=5.0, smooth=16.0),
 }
 road_dirt = np.zeros((N, N))
 road_core = np.zeros((N, N), dtype=bool)  # centre strips of roads already laid; later roads join them
@@ -360,6 +360,7 @@ for rid, pts, width, cls in order:
 # Final pass: re-read each road from the finished terrain (corridors overlap at junctions and
 # hairpins) and re-level it in place with the same grade limit, keeping pads and plateaus fixed.
 for _ in range(2):
+    taken = np.zeros((N, N), dtype=bool)  # centre strips of higher-priority roads re-levelled this pass
     for rid, pts, width, cls in order:
         spec = ROAD_CLASS[cls]
         cum = cumulative(pts)
@@ -369,7 +370,7 @@ for _ in range(2):
         pz = np.interp(s, cum, pts[:, 1])
         ij = (np.clip(np.round(pz - ORIGIN), 0, N - 1).astype(int), np.clip(np.round(px - ORIGIN), 0, N - 1).astype(int))
         h = np.array([sample(H, a, b) for a, b in zip(px, pz)])
-        fixed = protected[ij] | water_mask[ij]
+        fixed = protected[ij] | water_mask[ij] | taken[ij]
         step = spec["grade"] * (s[1] - s[0])
         for _pass in range(4):
             for k in range(1, n):
@@ -379,8 +380,9 @@ for _ in range(2):
                 if not fixed[k]:
                     h[k] = np.clip(h[k], h[k + 1] - step, h[k + 1] + step)
         dist, along = polyline_distance(pts, pad=width / 2 + 2)
-        core = np.isfinite(dist) & (dist <= width / 2 + spec["shoulder"]) & ~protected & ~water_mask
+        core = np.isfinite(dist) & (dist <= width / 2 + spec["shoulder"]) & ~protected & ~water_mask & ~taken
         H = np.where(core, np.interp(along, s, h), H)
+        taken |= np.isfinite(dist) & (dist <= width / 2) & ~water_mask
 
 
 # --- 5. ground-type maps ---------------------------------------------------------------------------
